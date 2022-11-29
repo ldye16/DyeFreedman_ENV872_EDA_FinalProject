@@ -40,10 +40,18 @@ Climate_Raw$year <- as.character(Climate_Raw$year) %>%
 
 ```{r}
 #Wrangling climate dataset for focal period
-Climate_08to20 <- Climate_Raw %>%
+Climate_08to18 <- Climate_Raw %>%
   mutate(Year = year(year)) %>%
-  select(LTER_site:logger, airtemp_max, airtemp_min, airtemp_avg, solrad_tot, Year) %>%
-  filter(Year >= "2008", Year <= "2020")
+  select(LTER_site:date, airtemp_max, airtemp_min, airtemp_avg, Year) %>%
+  filter(Year >= "2008", Year <= "2018")
+
+Climate_Means_08to18 <- Climate_08to18 %>%
+  group_by(Year) %>%
+  summarise(
+    Mean_Max_Temp = mean(airtemp_max, na.rm=T),
+    Mean_Min_Temp = mean(airtemp_min, na.rm=T),
+    Mean_Avg_Temp = mean(airtemp_avg, na.rm=T)
+  )
  
 ```
 
