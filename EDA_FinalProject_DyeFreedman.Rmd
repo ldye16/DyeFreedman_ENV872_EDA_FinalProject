@@ -1,0 +1,57 @@
+---
+title: "Pika Distribution Under Climate Change in the Rocky Mountains"
+author: "Jacob Freedman and Logan Dye"
+date: "2022-11-29"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=45), tidy=TRUE)
+
+#Installing and loading packages
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(sf)
+library(cowplot)
+library(maps)
+```
+
+```{r}
+#Reading in Pika Demography and Climate datasets
+Pika_Raw <- read.csv("./Data/Raw/pika_demography.cr.data.csv", stringsAsFactors = TRUE)
+Climate_Raw <- read.csv("./Data/Raw/d-1cr23x-cr1000.daily.ml.data.csv", stringsAsFactors = TRUE)
+```
+
+```{r}
+#Setting proper dates
+class(Pika_Raw$date)
+Pika_Raw$date <- as.Date(Pika_Raw$date, format = "%Y-%m-%d")
+class(Pika_Raw$date)
+
+class(Climate_Raw$date)
+Climate_Raw$date <- as.Date(Climate_Raw$date, format = "%Y-%m-%d")
+class(Climate_Raw$date)
+Climate_Raw$year <- as.character(Climate_Raw$year) %>%
+  as.Date.character(Climate_Raw$year, format = "%Y")
+```
+
+```{r}
+#Wrangling climate dataset for focal period
+Climate_08to20 <- Climate_Raw %>%
+  mutate(Year = year(year)) %>%
+  select(LTER_site:logger, airtemp_max, airtemp_min, airtemp_avg, solrad_tot, Year) %>%
+  filter(Year >= "2008", Year <= "2020")
+ 
+```
+
+
+```{r}
+#Isolating individual Pika captures
+
+```
+
+
+
