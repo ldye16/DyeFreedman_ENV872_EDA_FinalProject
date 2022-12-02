@@ -1,0 +1,92 @@
+---
+output: 
+  pdf_document:
+    keep_tex: yes
+    fig_caption: yes
+    number_sections: yes
+geometry: margin=2.54cm
+title: "Pika Distribution and Trends at Niwot Ridge"
+subtitle: "https://github.com/ldye16/DyeFreedman_ENV872_EDA_FinalProject"
+author: "Jacob Freedman and Logan Dye"
+fontsize: 12pt
+mainfont: Times New Roman
+
+---
+
+\newpage
+\tableofcontents 
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
+
+```{r setup, include=FALSE}
+# Set your working directory
+
+# Load your packages
+
+# Set your ggplot theme
+
+# Load your datasets
+
+```
+
+
+# Rationale and Research Questions
+The American Pika is a threatened small mammal endemic to alpine tundra habitat in the Rocky Mountains and Sierra Nevadas. Climate change is a growing threat worldwide, and is expected to have a particular impact on high elevation habitat. Pikas are sensitive to both temperature and changes in the water balance (impacted by seasonality of snowmelt), so climate change could undoubtedly threaten their long-term viability. In addition, as Pikas occupy habitat at the tops of mountain ridges, their possible migration either northward or to higher ridges would involve them crossing over lower elevation valleys. Their ability to do so is unknown, which makes their possibility of survival even murkier. 
+
+Niwot Ridge is one of the most heavily studied alpine areas in the Rocky Mountains. It is home to multiple research projects, as it is both a NEON and LTER Site. LTER researchers have gathered data on Pika demography and climate over the past 10-20 years. We used multiple public datasets to answer multiple questions regarding trends in climate and Pika populations at Niwot Ridge.
+
+1. Is temperature changing over time at Niwot Ridge?
+2. Are Pika populations changing over time and is there a correlation between population changes and temperature changes?
+3. Are Pika populations changing spatially over time? Are they seeking higher elevation sites?
+4. An increase in zoonotic diseases is a well documented effect of warming temperatures. Is mite and flea prevalence in Pikas changing over time?
+
+
+\newpage
+
+# Dataset Information
+
+Both climate and pika data was sourced from the Niwot Ridge LTER website. All datasets are for public use and are available here: https://nwt.lternet.edu/data-catalog Significant wrangling was required to answer the research questions. The general process is explained below for each research question. 
+
+Temperature changes over time:
+
+Climate data was available from 2000 to 2021, but we selected for years in which there was an overlap of available temperature data with the Pika data (2008 to 2018). The dataset contained the site and device names, daily min, max, and avg air temperature, relative humidity, barometric pressure, wind speed/direction, solar radiation and soil temperature. We then used the package "zoo" to interpolate NA values in the temperature data. 
+
+Pika population changes over time and in relation to temperature:
+
+Pika data was available from 2008 to 2020, but we selected for years in which there was an overlap of available Pika data with the temperature data (2008 to 2018). The dataset contained the site, data, slope aspect, location of capture, identification information, demography data, biological samples collected and pest presence. In order to estimate population over time, we identified annual Pika captures at Niwot Ridge. This required eliminating any possibility of recounts within the same year. We first filtered out any captures that did not have a "tag type", meaning that they were not tagged at all and not enough information is provided to rule it out as a recapture. Second, we filtered out observations where the tag type was recorded, but for an unknown reason none of the tag information (ear tag color or number code) was recorded. Finally, we split the dataset into separate datasets for each year and found the number of unique tag IDs to derive annual counts. 
+
+To prepare for our temperature and pika abundance regressions, we needed to calculate mean annual temperature values. We 
+
+
+
+\newpage
+
+# Exploratory Analysis 
+
+
+
+\newpage
+
+# Analysis
+
+
+
+## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+
+## Question 2: 
+
+
+
+
+\newpage
+
+# Summary and Conclusions
+
+
+\newpage
+
+# References
+<add references here if relevant, otherwise delete this section> 
