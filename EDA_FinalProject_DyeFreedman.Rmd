@@ -62,22 +62,22 @@ Climate_08to18_clean <-
 Climate_Means_08to18 <- Climate_08to18_clean %>%
   group_by(Year) %>%
   summarise(
+    Mean_Max_Temp = mean(airtemp_max_interpolated, na.rm=T),
+    Mean_Min_Temp = mean(airtemp_min_interpolated, na.rm=T),
+    Mean_Avg_Temp = mean(airtemp_avg_interpolated, na.rm=T)
+  )
+ 
+Climate_Means_08to18_NARemoved <- Climate_08to18 %>%
+  group_by(Year) %>%
+  summarise(
     Mean_Max_Temp = mean(airtemp_max, na.rm=T),
     Mean_Min_Temp = mean(airtemp_min, na.rm=T),
     Mean_Avg_Temp = mean(airtemp_avg, na.rm=T)
   )
- 
-Climate_Monthly_Means_08to18 <- Climate_08to18 %>%
-  group_by(Month) %>%
-  summarise(
-    Monthly_Mean_Max_Temp = mean(airtemp_max, na.rm=T),
-    Monthly_Mean_Min_Temp = mean(airtemp_min, na.rm=T),
-    Monthly_Mean_Avg_Temp = mean(airtemp_avg, na.rm=T)
-  )
 ```
 
 
-```{r, fig.height = 11, fig.width = 8}
+```{r}
 #Isolating individual Pika captures. We combined all tag components into a single identifier (PikaID) to sort out recaptures from the same year. 
 Pika_Processed <- Pika_Raw %>%
   mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
@@ -163,17 +163,12 @@ Pika_Count_08to18 <- rbind(Pika_2008_Count, Pika_2010_Count, Pika_2011_Count, Pi
 
 colnames(Pika_Count_08to18) <- c('Year','Captures')
 
-#Time series and lm stuff that we may want to delete
+#Regression of Pika Counts over time
+Pika_Total_Count <- Pika_Total_Count %>%
+  mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13))
 
-Pika_Counts_ts <- ts(Pika_Total_Count, start = c(2008,1), end = c(2020,1), frequency = 1)
-Pika_Trend <- adf.test(Pika_Total_Count$Captures)
-
-Pika_Regression <- lm(data = Pika_Total_Count, Captures ~ Year)
+Pika_Regression <- lm(data = Pika_Total_Count, Captures ~ YearNum)
 summary(Pika_Regression)
-
-#Poisson model for Pika counts over time
-
-summary(Pika_Poisson <- glm(Captures ~ Year, family="poisson", data=Pika_Total_Count))
 ```
 
 ```{r}
@@ -197,7 +192,7 @@ summary(Pika_MaxTemp_Regression)
 
 ```{r}
 #Temperature Time Series Analysis
-Climate_Daily_Means_ts <- ts(Climate_08to18$airtemp_avg, start = c(2008,1), end = c(2018,365), frequency = 365)
+Climate_Daily_Means_ts <- ts(Climate_08to18_clean$airtemp_avg_interpolated, start = c(2008,1), end = c(2018,365), frequency = 365)
 Climate_Daily_trend <- Kendall::SeasonalMannKendall(Climate_Daily_Means_ts)
 summary(Climate_Daily_trend)
 
