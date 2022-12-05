@@ -51,7 +51,7 @@ Climate_Raw$year <- as.character(Climate_Raw$year) %>%
 ```{r}
 #Wrangling climate dataset for focal period
 Climate_08to18 <- Climate_Raw %>%
-  mutate(Year = year(year), Month = month(date)) %>%
+mutate(Year = year(year), Month = month(date)) %>%
   select(LTER_site:date, airtemp_max, airtemp_min, airtemp_avg, Year, Month) %>%
   filter(Year >= "2008", Year <= "2018")
 
@@ -324,5 +324,67 @@ Pika_Location_2010_Plot
 plot_grid(Pika_Location_2008_Plot, Pika_Location_2010_Plot, nrow = 1, align = 'h')
 
 mapview(Pika_Locations_sf) + mapview(Mean_Pika_Location_sf)
+```
+
+
+```{r}
+#wrangling for flea data
+
+#Isolating individual Pika captures, this time including flea data. We used the same Pika ID as before to isolate individual Pika's. 
+Fleas_Pika_Processed <- Pika_Raw %>%
+  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
+  select(LTER_site:date, Year, easting:num_l_ear, fleas_samp, fleas_obs, PikaID) %>%
+  group_by(Year) %>%
+  subset(tag_type =="A" | tag_type == "C3") %>%
+  subset(PikaID!= "NS  NS  NS  NS" & PikaID!= "NA  NA  NA  NA")
+
+#remove NA's and create two datasets. One with all flea observations and one with all flea's sampled. 
+
+Fleas_obs_NARemoved <- Fleas_Pika_Processed %>%
+  na.omit(fleas_obs)
+
+Fleas_samp_NARemoved <- Fleas_Pika_Processed %>%
+  na.omit(fleas_samp)
+
+#Finding the mean fleas observed per indiviual Pika by year. 
+ 
+Fleas_obs_2010 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2010) %>%
+  group_by(PikaID) %>%
+  as.numeric(fleas_obs) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs)
+  )
+
+Fleas_obs_2011 <- Pika_Processed %>%
+  filter(Year == 2011)
+
+Fleas_obs_2012 <- Pika_Processed %>%
+  filter(Year == 2012)
+
+Fleas_obs_2013 <- Pika_Processed %>%
+  filter(Year == 2013)
+
+Fleas_obs_2014 <- Pika_Processed %>%
+  filter(Year == 2014)
+
+Fleas_obs_2015 <- Pika_Processed %>%
+  filter(Year == 2015)
+
+Fleas_obs_2016 <- Pika_Processed %>%
+  filter(Year == 2016)
+
+Fleas_obs_2017 <- Pika_Processed %>%
+  filter(Year == 2017)
+
+Fleas_obs_2018 <- Pika_Processed %>%
+  filter(Year == 2018)
+
+Fleas_obs_2019 <- Pika_Processed %>%
+  filter(Year == 2019)
+
+Fleas_obs_2020 <- Pika_Processed %>%
+  filter(Year == 2020)
+
 ```
 
