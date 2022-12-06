@@ -352,7 +352,10 @@ Fleas_obs_NARemoved <- Fleas_Pika_Processed %>%
 Fleas_samp_NARemoved <- Fleas_Pika_Processed %>%
   select(date, Year, fleas_samp, PikaID) %>%
   na.omit(fleas_samp)
+```
 
+
+```{r}
 #Finding the mean fleas observed per individual Pika by year. We have to do by year because the same Pika may be sampled multiple times in the same year or multiple times over multiple years. If we did a group_by(PikaID) for the entire data set we would group Pika observations over multiple years. 
 
 Fleas_obs_2010 <- Fleas_obs_NARemoved %>%
@@ -452,8 +455,11 @@ Fleas_Obs_10to20 <-
 
 Fleas_Obs_Climate_Years <-
   rbind(Fleas_obs_2010, Fleas_obs_2011, Fleas_obs_2012, Fleas_obs_2013, Fleas_obs_2014, Fleas_obs_2015, Fleas_obs_2016, Fleas_obs_2017, Fleas_obs_2018)
+```
 
-#Completing the same process of splitting the data into years, grouping by individual Pika tag IDs, and finding yearing means. This time for fleas sampled, rather than fleas observed. 
+
+```{r}
+#Completing the same process of splitting the data into years, grouping by individual Pika tag IDs, and finding yearly means. This time for fleas sampled, rather than fleas observed. 
 
 Fleas_samp_2008 <- Fleas_samp_NARemoved %>%
   filter(Year == 2008) %>%
@@ -560,7 +566,10 @@ Fleas_Samp_08to20 <-
 
 fleas_Samp_Climate_Years <-
   rbind(Fleas_samp_2008, Fleas_samp_2010, Fleas_samp_2011, Fleas_samp_2012, Fleas_samp_2013, Fleas_samp_2014, Fleas_samp_2015, Fleas_samp_2016, Fleas_samp_2017, Fleas_samp_2018)
+```
 
+
+```{r}
 #Create data frames with the yearly average fleas observations and samples. 
 
 #Total Flea Observation by year
@@ -580,7 +589,7 @@ Yearly_Flea_Obs_10to18 <- Yearly_Flea_Obs_10to20 %>%
   filter(Year!= 2019,
          Year!= 2020)
 
-#Total Flea Samples by year
+#Total average Flea Samples by year
 
 Yearly_Fleas_Samp_08to20_pipe <- Fleas_Samp_08to20 %>%
   group_by(Year) %>%
@@ -592,7 +601,7 @@ colnames(Yearly_Fleas_Samp_08to20_pipe) <- c("Year", "Average", "Avg_Fleas_Samp"
 Yearly_Fleas_Samp_08to20 <- Yearly_Fleas_Samp_08to20_pipe %>%
   select(Year, Avg_Fleas_Samp)
 
-#Total Flea Samples by year within climate data range
+#Total average Flea Samples by year within climate data range
 
 Yearly_Fleas_Samp_08to18 <- Yearly_Fleas_Samp_08to20 %>%
   filter(Year!= 2019,
@@ -604,5 +613,157 @@ Complete_Flea_Data <- Climate_Means_08to18_Refined %>%
   left_join(Yearly_Flea_Obs_10to18, by = "Year") %>%
   left_join(Yearly_Fleas_Samp_08to18, by = "Year")
 
+```
+
+
+```{r}
+#Wrangling the ear mites sampled data
+
+Mites_Pika_Processed <- Pika_Raw %>%
+  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
+  select(LTER_site:date, Year, easting:num_l_ear, ear.mites_samp, ear.mite_obs, PikaID) %>%
+  group_by(Year) %>%
+  subset(tag_type =="A" | tag_type == "C3") %>%
+  subset(PikaID!= "NS  NS  NS  NS" & PikaID!= "NA  NA  NA  NA")
+
+#convert ear mites sampled from a factor to numeric
+
+Mites_Pika_Processed$ear.mites_samp <- as.numeric(as.character(Mites_Pika_Processed$ear.mites_samp))
+
+#remove the NAs and NSs from the ear mites sampled dataset
+
+Mites_samp_NARemoved <- Mites_Pika_Processed %>%
+  select(date, Year, ear.mites_samp, PikaID) %>%
+  na.omit(ear.mites_samp)
+```
+
+```{r}
+#Completing the same process of splitting the data into years, grouping by individual Pika tag IDs, and finding yearly means. This time for ear mites sampled.  
+
+Mites_samp_2008 <- Mites_samp_NARemoved %>%
+  filter(Year == 2008) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2010 <- Mites_samp_NARemoved %>%
+  filter(Year == 2010) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2011 <- Mites_samp_NARemoved %>%
+  filter(Year == 2011) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2012 <- Mites_samp_NARemoved %>%
+  filter(Year == 2012) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2013 <- Mites_samp_NARemoved %>%
+  filter(Year == 2013) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2014 <- Mites_samp_NARemoved %>%
+  filter(Year == 2014) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2015 <- Mites_samp_NARemoved %>%
+  filter(Year == 2015) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2016 <- Mites_samp_NARemoved %>%
+  filter(Year == 2016) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2017 <- Mites_samp_NARemoved %>%
+  filter(Year == 2017) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2018 <- Mites_samp_NARemoved %>%
+  filter(Year == 2018) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2019 <- Mites_samp_NARemoved %>%
+  filter(Year == 2019) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+Mites_samp_2020 <- Mites_samp_NARemoved %>%
+  filter(Year == 2020) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_ear.mites_Samp = mean(ear.mites_samp),
+    Year = unique(Year)
+  )
+
+#Combine the data into one data set with all yearly data. This dataset has the average ear mites found on each individual Pika for every year. 
+
+Mites_samp_08to20 <-
+  rbind(Mites_samp_2008, Mites_samp_2010, Mites_samp_2011, Mites_samp_2012, Mites_samp_2013, Mites_samp_2014, Mites_samp_2015, Mites_samp_2016, Mites_samp_2017, Mites_samp_2018, Mites_samp_2019, Mites_samp_2020)
+
+#The above data frame within the climate data date range. 
+
+Mites_samp_08to18 <- 
+  Mites_sampe_08to20 %>%
+  filter(Year!= 2019,
+         Year!= 2020)
+
+# Total average ear mite samples by year
+
+Yearly_Mite_Samp_08to20_pipe <- Mites_samp_08to20 %>%
+  group_by(Year) %>%
+  summarise(Yearly_ear.mite_Samp = mean(Mean_ear.mites_Samp),
+            format(round(Yearly_ear.mite_Samp, 2), nsmall = 2)) 
+
+colnames(Yearly_Mite_Samp_08to20_pipe) <- c("Year", "Average", "Avg_ear.mite_Samp")
+
+Yearly_Mite_Samp_08to20 <- Yearly_Mite_Samp_08to20_pipe %>%
+  select(Year, Avg_ear.mite_Samp)
+
+#Yearly averagle ear mite samples within the climate data range. 
+
+Yearly_Mite_Samp_08to18 <- Yearly_Mite_Samp_08to20 %>%
+  filter(Year!= 2019, 
+         Year!= 2020)
 ```
 
