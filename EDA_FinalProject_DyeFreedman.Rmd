@@ -755,15 +755,82 @@ Yearly_Mite_Samp_08to20_pipe <- Mites_samp_08to20 %>%
   summarise(Yearly_ear.mite_Samp = mean(Mean_ear.mites_Samp),
             format(round(Yearly_ear.mite_Samp, 2), nsmall = 2)) 
 
-colnames(Yearly_Mite_Samp_08to20_pipe) <- c("Year", "Average", "Avg_ear.mite_Samp")
+colnames(Yearly_Mite_Samp_08to20_pipe) <- c("Year", "Average", "Proportion_ear.mite_Samp")
 
 Yearly_Mite_Samp_08to20 <- Yearly_Mite_Samp_08to20_pipe %>%
-  select(Year, Avg_ear.mite_Samp)
+  select(Year, Proportion_ear.mite_Samp)
 
 #Yearly averagle ear mite samples within the climate data range. 
 
 Yearly_Mite_Samp_08to18 <- Yearly_Mite_Samp_08to20 %>%
   filter(Year!= 2019, 
          Year!= 2020)
+```
+
+```{r}
+#wrangle the mite observed data. 
+
+Mites_obs_NARemoved <- Mites_Pika_Processed %>%
+  select(Year, ear.mite_obs, PikaID) %>%
+  na.omit(ear.mites_obs)
+
+#2008
+
+Ear.Mite_2008 <- Mites_obs_NARemoved %>%
+  filter(Year == 2008) 
+
+Ear.Mite_Transformation_2008 <- 
+  transform(Ear.Mite_2008,Mite_Obs_Frequency=ave(seq(nrow(Ear.Mite_2008)),ear.mite_obs,FUN=length))
+  
+Ear.Mite_Obs_Pivot_2008 <- Ear.Mite_Transformation_2008 %>%
+  pivot_wider(names_from = ear.mite_obs, values_from = Mite_Obs_Frequency) %>%
+  group_by(Year) %>%
+  summarise(
+    N = mean(N, na.rm=T),
+    L = mean(L, na.rm=T)
+  )
+
+#2010
+
+Ear.Mite_2010 <- Mites_obs_NARemoved %>%
+  filter(Year == 2010) 
+
+Ear.Mite_Transformation_2010 <- 
+  transform(Ear.Mite_2010,Mite_Obs_Frequency=ave(seq(nrow(Ear.Mite_2010)),ear.mite_obs,FUN=length))
+  
+Ear.Mite_Obs_Pivot_2010 <- Ear.Mite_Transformation_2010 %>%
+  pivot_wider(names_from = ear.mite_obs, values_from = Mite_Obs_Frequency) %>%
+  group_by(Year) %>%
+  summarise(
+    NS = mean(NS, na.rm=T),
+    N = mean(N, na.rm=T),
+    L = mean(L, na.rm=T),
+    M = mean(M, na.rm=T)
+  ) 
+
+
+
+#2011
+
+#2012
+
+#2013
+
+#2014
+
+#2015
+
+#2016
+
+#2017
+
+#2018
+
+#2019
+
+#2020
+
+
+
 ```
 
