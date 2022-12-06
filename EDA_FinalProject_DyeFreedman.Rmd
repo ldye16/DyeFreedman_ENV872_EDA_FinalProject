@@ -338,53 +338,271 @@ Fleas_Pika_Processed <- Pika_Raw %>%
   subset(tag_type =="A" | tag_type == "C3") %>%
   subset(PikaID!= "NS  NS  NS  NS" & PikaID!= "NA  NA  NA  NA")
 
-#remove NA's and create two datasets. One with all flea observations and one with all flea's sampled. 
+# Convert fleas_obs and fleas_samp columns from factor to numeric. 
+
+Fleas_Pika_Processed$fleas_obs <- as.numeric(as.character(Fleas_Pika_Processed$fleas_obs))
+Fleas_Pika_Processed$fleas_samp <- as.numeric(as.character(Fleas_Pika_Processed$fleas_samp))
+
+#remove NA's and create two datasets. One with all flea observations and one with all flea's sampled.
 
 Fleas_obs_NARemoved <- Fleas_Pika_Processed %>%
+  select(date, Year, fleas_obs, PikaID) %>%
   na.omit(fleas_obs)
 
 Fleas_samp_NARemoved <- Fleas_Pika_Processed %>%
+  select(date, Year, fleas_samp, PikaID) %>%
   na.omit(fleas_samp)
 
-#Finding the mean fleas observed per indiviual Pika by year. 
- 
+#Finding the mean fleas observed per individual Pika by year. We have to do by year because the same Pika may be sampled multiple times in the same year or multiple times over multiple years. If we did a group_by(PikaID) for the entire data set we would group Pika observations over multiple years. 
+
 Fleas_obs_2010 <- Fleas_obs_NARemoved %>%
   filter(Year == 2010) %>%
   group_by(PikaID) %>%
-  as.numeric(fleas_obs) %>%
   summarise(
-    Mean_Flea_Obs = mean(fleas_obs)
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
   )
 
-Fleas_obs_2011 <- Pika_Processed %>%
-  filter(Year == 2011)
+Fleas_obs_2011 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2011) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
 
-Fleas_obs_2012 <- Pika_Processed %>%
-  filter(Year == 2012)
+Fleas_obs_2012 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2012) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
 
-Fleas_obs_2013 <- Pika_Processed %>%
-  filter(Year == 2013)
+Fleas_obs_2013 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2013) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
 
-Fleas_obs_2014 <- Pika_Processed %>%
-  filter(Year == 2014)
+Fleas_obs_2014 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2014) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
 
-Fleas_obs_2015 <- Pika_Processed %>%
-  filter(Year == 2015)
+Fleas_obs_2015 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2015) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
 
-Fleas_obs_2016 <- Pika_Processed %>%
-  filter(Year == 2016)
+Fleas_obs_2016 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2016) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
 
-Fleas_obs_2017 <- Pika_Processed %>%
-  filter(Year == 2017)
+Fleas_obs_2017 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2017) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
 
-Fleas_obs_2018 <- Pika_Processed %>%
-  filter(Year == 2018)
+Fleas_obs_2018 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2018) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
 
-Fleas_obs_2019 <- Pika_Processed %>%
-  filter(Year == 2019)
+Fleas_obs_2019 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2019) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
 
-Fleas_obs_2020 <- Pika_Processed %>%
-  filter(Year == 2020)
+Fleas_obs_2020 <- Fleas_obs_NARemoved %>%
+  filter(Year == 2020) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Obs = mean(fleas_obs),
+    Year = unique(Year)
+  )
+
+#combine the yearly flea observations into one data frame which no longer has repeated Pika observations within the same year. 
+
+Fleas_Obs_10to20 <-
+  rbind(Fleas_obs_2010, Fleas_obs_2011, Fleas_obs_2012, Fleas_obs_2013, Fleas_obs_2014, Fleas_obs_2015, Fleas_obs_2016, Fleas_obs_2017, Fleas_obs_2018, Fleas_obs_2019, Fleas_obs_2020)
+
+#fleas observed with years within the climate data range. 
+
+Fleas_Obs_Climate_Years <-
+  rbind(Fleas_obs_2010, Fleas_obs_2011, Fleas_obs_2012, Fleas_obs_2013, Fleas_obs_2014, Fleas_obs_2015, Fleas_obs_2016, Fleas_obs_2017, Fleas_obs_2018)
+
+#Completing the same process of splitting the data into years, grouping by individual Pika tag IDs, and finding yearing means. This time for fleas sampled, rather than fleas observed. 
+
+Fleas_samp_2008 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2008) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2010 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2010) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2011 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2011) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2012 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2012) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2013 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2013) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2014 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2014) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2015 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2015) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2016 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2016) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2017 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2017) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2018 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2018) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2019 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2019) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+Fleas_samp_2020 <- Fleas_samp_NARemoved %>%
+  filter(Year == 2020) %>%
+  group_by(PikaID) %>%
+  summarise(
+    Mean_Flea_Samp = mean(fleas_samp),
+    Year = unique(Year)
+  )
+
+#combine the yearly flea samples into one data frame which no longer has repeated Pika observations within the same year.
+
+Fleas_Samp_08to20 <- 
+  rbind(Fleas_samp_2008, Fleas_samp_2010, Fleas_samp_2011, Fleas_samp_2012, Fleas_samp_2013, Fleas_samp_2014, Fleas_samp_2015, Fleas_samp_2016, Fleas_samp_2017, Fleas_samp_2018, Fleas_samp_2019, Fleas_samp_2020)
+
+#fleas observed with years within the climate data range. 
+
+fleas_Samp_Climate_Years <-
+  rbind(Fleas_samp_2008, Fleas_samp_2010, Fleas_samp_2011, Fleas_samp_2012, Fleas_samp_2013, Fleas_samp_2014, Fleas_samp_2015, Fleas_samp_2016, Fleas_samp_2017, Fleas_samp_2018)
+
+#Create data frames with the yearly average fleas observations and samples. 
+
+#Total Flea Observation by year
+Yearly_Fleas_Obs_10to20_pipe <- Fleas_Obs_10to20 %>%
+  group_by(Year) %>%
+  summarise(Yearly_Flea_Obs = mean(Mean_Flea_Obs),
+            format(round(Yearly_Flea_Obs, 2), nsmall = 2)) 
+
+colnames(Yearly_Fleas_Obs_10to20_pipe) <- c("Year", "Average", "Avg_Flea_Obs")
+
+Yearly_Flea_Obs_10to20 <- Yearly_Fleas_Obs_10to20_pipe %>%
+  select(Year, Avg_Flea_Obs)
+
+#Total Flea Observations by year within climate data range 
+
+Yearly_Flea_Obs_10to18 <- Yearly_Flea_Obs_10to20 %>%
+  filter(Year!= 2019,
+         Year!= 2020)
+
+#Total Flea Samples by year
+
+Yearly_Fleas_Samp_08to20_pipe <- Fleas_Samp_08to20 %>%
+  group_by(Year) %>%
+  summarise(Yearly_Flea_Samp = mean(Mean_Flea_Samp),
+            format(round(Yearly_Flea_Samp, 2), nsmall = 2)) 
+
+colnames(Yearly_Fleas_Samp_08to20_pipe) <- c("Year", "Average", "Avg_Fleas_Samp")
+
+Yearly_Fleas_Samp_08to20 <- Yearly_Fleas_Samp_08to20_pipe %>%
+  select(Year, Avg_Fleas_Samp)
+
+#Total Flea Samples by year within climate data range
+
+Yearly_Fleas_Samp_08to18 <- Yearly_Fleas_Samp_08to20 %>%
+  filter(Year!= 2019,
+         Year!= 2020)
+
+#Combine the wrangled flea data to the climate data. 
+
+Complete_Flea_Data <- Climate_Means_08to18_Refined %>%
+  left_join(Yearly_Flea_Obs_10to18, by = "Year") %>%
+  left_join(Yearly_Fleas_Samp_08to18, by = "Year")
 
 ```
 
