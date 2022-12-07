@@ -775,10 +775,12 @@ Mites_obs_NARemoved <- Mites_Pika_Processed %>%
   na.omit(ear.mites_obs)
 
 
-# Eli TEST
+# Eli TEST: convered observations from factor to a character
 ear.mite.TEST <- Mites_obs_NARemoved
 
 ear.mite.TEST$ear.mite_obs <- as.character(ear.mite.TEST$ear.mite_obs)
+
+#selected only for the values we want in our analysis. 
 
 eT <- ear.mite.TEST %>% 
   filter(ear.mite_obs == 'NS' |
@@ -789,10 +791,16 @@ eT <- ear.mite.TEST %>%
 
 unique(eT$ear.mite_obs)
 
-# Eli group by year then obs
+# Eli group by year then 
 
 eTone <- eT %>% 
   group_by(Year,ear.mite_obs) %>% 
+  summarise(
+    Count = n()
+  )
+
+eTtwo <- eT %>% 
+  group_by(ear.mite_obs,Year) %>% 
   summarise(
     Count = n()
   )
