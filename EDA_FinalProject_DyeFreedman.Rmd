@@ -607,9 +607,14 @@ Yearly_Fleas_Samp_08to18 <- Yearly_Fleas_Samp_08to20 %>%
   filter(Year!= 2019,
          Year!= 2020)
 
+#Combine the wrangled flea data into one dataset. 
+
+Total_Flea_Data <- Yearly_Fleas_Samp_08to20 %>% 
+  left_join(Yearly_Flea_Obs_10to20, by = "Year")
+
 #Combine the wrangled flea data to the climate data. 
 
-Complete_Flea_Data <- Climate_Means_08to18_Refined %>%
+Climate_and_Flea_Data <- Climate_Means_08to18_Refined %>%
   left_join(Yearly_Flea_Obs_10to18, by = "Year") %>%
   left_join(Yearly_Fleas_Samp_08to18, by = "Year")
 
@@ -774,100 +779,170 @@ Mites_obs_NARemoved <- Mites_Pika_Processed %>%
   select(Year, ear.mite_obs, PikaID) %>%
   na.omit(ear.mites_obs)
 
+#Convert ear mites observed from a factor to a character. 
 
-# Eli TEST: convered observations from factor to a character
-ear.mite.TEST <- Mites_obs_NARemoved
+Mites_obs_NARemoved$ear.mite_obs <- as.character(Mites_obs_NARemoved$ear.mite_obs)
 
-ear.mite.TEST$ear.mite_obs <- as.character(ear.mite.TEST$ear.mite_obs)
+#select the values we want in our analysis
 
-#selected only for the values we want in our analysis. 
-
-eT <- ear.mite.TEST %>% 
+Selected_Mite_Obs <- Mites_obs_NARemoved %>% 
   filter(ear.mite_obs == 'NS' |
          ear.mite_obs == 'N' |
          ear.mite_obs == 'L' |
          ear.mite_obs == 'M' |
          ear.mite_obs == 'H')
 
-unique(eT$ear.mite_obs)
+#Group by year and abservation variables. 
 
-# Eli group by year then 
-
-eTone <- eT %>% 
+Grouped_Mite_Obs <- Selected_Mite_Obs %>% 
   group_by(Year,ear.mite_obs) %>% 
   summarise(
     Count = n()
   )
 
-eTtwo <- eT %>% 
-  group_by(ear.mite_obs,Year) %>% 
-  summarise(
-    Count = n()
-  )
+#Pivot wider to have columns of observed variables and total counts as the variables
 
-# Eli 2008 
+Mite_Obs_Counts_08to20 <- Grouped_Mite_Obs %>% 
+  pivot_wider(names_from = ear.mite_obs, values_from = Count) %>%
+  replace(is.na(.), 0)
 
-eTone2008 <- eTone %>% 
-  filter(Year == 2008) %>% 
-  pivot_wider(names_from = ear.mite_obs, values_from = Count)
+#Total mite observation counts within the climate data range. 
 
-#2008
+Mite_Obs_Counts_08to18 <- Mite_Obs_Counts_08to20 %>%
+  filter(Year != 2019,
+         Year != 2020)
 
-Ear.Mite_2008 <- Mites_obs_NARemoved %>%
-  filter(Year == 2008) 
 
-Ear.Mite_Transformation_2008 <- 
-  transform(Ear.Mite_2008,Mite_Obs_Frequency=ave(seq(nrow(Ear.Mite_2008)),ear.mite_obs,FUN=length))
+```
+
+```{r}
+#Create a data frame with all mite data
+
+All_Mite_Data_08to20 <- Yearly_Mite_Samp_08to20 %>%
+  left_join(Mite_Obs_Counts_08to20, by = "Year") %>%
+  as.Date(Year = "%Y")
+
+#Create a data frame with all mite data within the climate data range 
+
+All_Mite_Data_08to18 <- Yearly_Mite_Samp_08to18 %>%
+  left_join(Mite_Obs_Counts_08to18, by = "Year")
+
+
+```
+
+```{r}
+#Create the final parasite data frame with total flea and mite data over the entire study timeline. 
+
+Final_Parasite_DF <- Total_Flea_Data %>%
+  left_join(All_Mite_Data_08to20, by = "Year") %>%
+  mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13))
+
+Final_Parisite_DF
   
-Ear.Mite_Obs_Pivot_2008 <- Ear.Mite_Transformation_2008 %>%
-  pivot_wider(names_from = ear.mite_obs, values_from = Mite_Obs_Frequency) %>%
-  group_by(Year) %>%
-  summarise(
-    N = mean(N, na.rm=T),
-    L = mean(L, na.rm=T)
-  )
+Year = as.Date(paste0(Year), format = "%Y")
+#Create a final parasite data frame and combine it with the Climate Data. 
 
-#2010
+Final_Parasite_Climate_DF <- Climate_and_Flea_Data %>%
+  left_join(All_Mite_Data_08to18, by = "Year")
 
-Ear.Mite_2010 <- Mites_obs_NARemoved %>%
-  filter(Year == 2010) 
-
-Ear.Mite_Transformation_2010 <- 
-  transform(Ear.Mite_2010,Mite_Obs_Frequency=ave(seq(nrow(Ear.Mite_2010)),ear.mite_obs,FUN=length))
+No2008_Parasite_Climate_DF <- Final_Parasite_Climate_DF %>%
+  filter(Year != 2008)
   
-Ear.Mite_Obs_Pivot_2010 <- Ear.Mite_Transformation_2010 %>%
-  pivot_wider(names_from = ear.mite_obs, values_from = Mite_Obs_Frequency) %>%
-  group_by(Year) %>%
-  summarise(
-    NS = mean(NS, na.rm=T),
-    N = mean(N, na.rm=T),
-    L = mean(L, na.rm=T),
-    M = mean(M, na.rm=T)
-  ) 
+```
 
+```{r}
+#Analysis 
 
+#Parasite observations and sample regression by time
 
-#2011
+Flea_Obs_Regression <- lm(data = Final_Parasite_DF, Avg_Flea_Obs ~ YearNum)
+summary(Flea_Obs_Regression)
 
-#2012
+Flea_Samp_Regression <- lm(data = Final_Parasite_DF, Avg_Fleas_Samp ~ YearNum)
+summary(Flea_Samp_Regression)
 
-#2013
+Mite_Samp_Regression <- lm(data = Final_Parasite_DF, Proportion_ear.mite_Samp ~ YearNum)
+summary(Mite_Samp_Regression)
 
-#2014
+#Parasite observation and sample regression by temperature 
 
-#2015
+#Flea Observations
 
-#2016
+Flea_Obs_AvgTemp_Regression <- lm(data = Final_Parasite_Climate_DF, Avg_Flea_Obs ~ Mean_Avg_Temp)
+summary(Flea_Obs_AvgTemp_Regression)
 
-#2017
+#Fleas Sampled
 
-#2018
+Flea_Samp_AvgTemp_Regression <- lm(data = Final_Parasite_Climate_DF, Avg_Fleas_Samp ~ Mean_Avg_Temp)
+summary(Flea_Samp_AvgTemp_Regression)
 
-#2019
+#Mites Sampled
 
-#2020
+Mites_Samp_AvgTemp_Regression <- lm(data = Final_Parasite_Climate_DF, Proportion_ear.mite_Samp ~ Mean_Avg_Temp)
+summary(Mites_Samp_AvgTemp_Regression)
 
+```
 
+```{r}
+#Visualizations
+
+#Over Time
+
+Flea_Obs_Plot <- ggplot(Yearly_Flea_Obs_10to20, aes(x= Year, y=Avg_Flea_Obs)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  scale_x_continuous(breaks = seq(2010, 2020, by = 1)) +
+  ylab("Average Fleas Observed") +
+  ggtitle("Fleas Observed Per Pika Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(Flea_Obs_Plot)
+
+Flea_Samp_Plot <- ggplot(Final_Parasite_DF, aes(x= Year, y=Avg_Fleas_Samp)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
+  ylab("Average Fleas Sampled") +
+  ggtitle("Fleas Sampled Per Pika Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(Flea_Samp_Plot)
+
+Mite_Samp_Plot <- ggplot(Final_Parasite_DF, aes(x= Year, y=Proportion_ear.mite_Samp)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
+  ylab("Proportion of Pika with Mites") +
+  ggtitle("Proportion of Pika's With Mites Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(Mite_Samp_Plot)
+
+#By Temperature
+
+Flea_Obs_AvgTemp_Plot <- ggplot(No2008_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Avg_Flea_Obs)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  ylab("Average Fleas Observed") +
+  xlab("Average Yearly Temperatrue (F)") +
+  ggtitle("Average Fleas Observed by Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(Flea_Obs_AvgTemp_Plot)
+
+Flea_Samp_AvgTemp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Avg_Fleas_Samp)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  ylab("Average Fleas Sampled") +
+  xlab("Average Yearly Temperatrue (F)") +
+  ggtitle("Average Fleas Sampled by Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(Flea_Samp_AvgTemp_Plot)
+
+Mite_Samp_AvgTemp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Proportion_ear.mite_Samp)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  ylab("Proportion of Pika with Mites") +
+  xlab("Average Yearly Temperatrue (F)") +
+  ggtitle("Proportion of Pika's With Mites By Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(Mite_Samp_AvgTemp_Plot)
 
 ```
 
