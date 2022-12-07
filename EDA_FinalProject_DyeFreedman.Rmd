@@ -774,6 +774,35 @@ Mites_obs_NARemoved <- Mites_Pika_Processed %>%
   select(Year, ear.mite_obs, PikaID) %>%
   na.omit(ear.mites_obs)
 
+
+# Eli TEST
+ear.mite.TEST <- Mites_obs_NARemoved
+
+ear.mite.TEST$ear.mite_obs <- as.character(ear.mite.TEST$ear.mite_obs)
+
+eT <- ear.mite.TEST %>% 
+  filter(ear.mite_obs == 'NS' |
+         ear.mite_obs == 'N' |
+         ear.mite_obs == 'L' |
+         ear.mite_obs == 'M' |
+         ear.mite_obs == 'H')
+
+unique(eT$ear.mite_obs)
+
+# Eli group by year then obs
+
+eTone <- eT %>% 
+  group_by(Year,ear.mite_obs) %>% 
+  summarise(
+    Count = n()
+  )
+
+# Eli 2008 
+
+eTone2008 <- eTone %>% 
+  filter(Year == 2008) %>% 
+  pivot_wider(names_from = ear.mite_obs, values_from = Count)
+
 #2008
 
 Ear.Mite_2008 <- Mites_obs_NARemoved %>%
