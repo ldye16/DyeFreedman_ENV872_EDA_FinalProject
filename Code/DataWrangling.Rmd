@@ -1,12 +1,12 @@
 ---
-title: "Pika Distribution Under Climate Change in the Rocky Mountains"
+title: "ParasiteWrangling"
 author: "Jacob Freedman and Logan Dye"
-date: "2022-11-29"
+date: "2022-12-07"
 output: html_document
 editor_options: 
   chunk_output_type: console
 ---
-
+  
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=45), tidy=TRUE)
 
@@ -26,20 +26,18 @@ mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
         legend.position = "top")
 theme_set(mytheme)
+
 ```
 
 ```{r}
 #Reading in Pika Demography and Climate datasets
 Pika_Raw <- read.csv("./Data/Raw/pika_demography.cr.data.csv", stringsAsFactors = TRUE)
 Climate_Raw <- read.csv("./Data/Raw/d-1cr23x-cr1000.daily.ml.data.csv", stringsAsFactors = TRUE)
-```
 
-```{r}
 #Setting proper dates
 class(Pika_Raw$date)
 Pika_Raw$date <- as.Date(Pika_Raw$date, format = "%Y-%m-%d")
 class(Pika_Raw$date)
-
 
 class(Climate_Raw$date)
 Climate_Raw$date <- as.Date(Climate_Raw$date, format = "%Y-%m-%d")
@@ -47,7 +45,7 @@ class(Climate_Raw$date)
 Climate_Raw$year <- as.character(Climate_Raw$year) %>%
   as.Date.character(Climate_Raw$year, format = "%Y")
 ```
-
+  
 ```{r}
 #Wrangling climate dataset for focal period
 Climate_08to18 <- Climate_Raw %>%
@@ -74,258 +72,10 @@ Climate_Means_08to18_NARemoved <- Climate_08to18 %>%
     Mean_Min_Temp = mean(airtemp_min, na.rm=T),
     Mean_Avg_Temp = mean(airtemp_avg, na.rm=T)
   )
-```
-
-
-```{r}
-#Isolating individual Pika captures. We combined all tag components into a single identifier (PikaID) to sort out recaptures from the same year. 
-Pika_Processed <- Pika_Raw %>%
-  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
-  select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
-  group_by(Year) %>%
-  subset(tag_type =="A" | tag_type == "C3") %>%
-  subset(PikaID!= "NS  NS  NS  NS" & PikaID!= "NA  NA  NA  NA")
-
-#Had to make dataframes for each year of data to count unique values.
-
-Pika_2008 <- Pika_Processed %>%
-  filter(Year == 2008)
-length(unique(Pika_2008$PikaID))
-
-Pika_2010 <- Pika_Processed %>%
-  filter(Year == 2010)
-length(unique(Pika_2010$PikaID))
-
-Pika_2011 <- Pika_Processed %>%
-  filter(Year == 2011)
-length(unique(Pika_2011$PikaID))
-
-Pika_2012 <- Pika_Processed %>%
-  filter(Year == 2012)
-length(unique(Pika_2012$PikaID))
-
-Pika_2013 <- Pika_Processed %>%
-  filter(Year == 2013)
-length(unique(Pika_2013$PikaID))
-
-Pika_2014 <- Pika_Processed %>%
-  filter(Year == 2014)
-length(unique(Pika_2014$PikaID))
-
-Pika_2015 <- Pika_Processed %>%
-  filter(Year == 2015)
-length(unique(Pika_2015$PikaID))
-
-Pika_2016 <- Pika_Processed %>%
-  filter(Year == 2016)
-length(unique(Pika_2016$PikaID))
-
-Pika_2017 <- Pika_Processed %>%
-  filter(Year == 2017)
-length(unique(Pika_2017$PikaID))
-
-Pika_2018 <- Pika_Processed %>%
-  filter(Year == 2018)
-length(unique(Pika_2018$PikaID))
-
-Pika_2019 <- Pika_Processed %>%
-  filter(Year == 2019)
-length(unique(Pika_2019$PikaID))
-
-Pika_2020 <- Pika_Processed %>%
-  filter(Year == 2020)
-length(unique(Pika_2020$PikaID))
-
-#Taking value from count and putting it into a data frame. Each annual data frame just has two values (year and number of captures).
-
-Pika_2008_Count <- as.data.frame(table(Pika_2008$Year))
-Pika_2010_Count <- as.data.frame(table(Pika_2010$Year))
-Pika_2011_Count <- as.data.frame(table(Pika_2011$Year))
-Pika_2012_Count <- as.data.frame(table(Pika_2012$Year))
-Pika_2013_Count <- as.data.frame(table(Pika_2013$Year))
-Pika_2014_Count <- as.data.frame(table(Pika_2014$Year))
-Pika_2015_Count <- as.data.frame(table(Pika_2015$Year))
-Pika_2016_Count <- as.data.frame(table(Pika_2016$Year))
-Pika_2017_Count <- as.data.frame(table(Pika_2017$Year))
-Pika_2018_Count <- as.data.frame(table(Pika_2018$Year))
-Pika_2019_Count <- as.data.frame(table(Pika_2019$Year))
-Pika_2020_Count <- as.data.frame(table(Pika_2020$Year))
-
-#Using rbind to compile 1 data frame of captures each year.
-
-Pika_Total_Count <- rbind(Pika_2008_Count, Pika_2010_Count, Pika_2011_Count, Pika_2012_Count, Pika_2013_Count, Pika_2014_Count, Pika_2015_Count, Pika_2016_Count, Pika_2017_Count, Pika_2018_Count, Pika_2019_Count, Pika_2020_Count)
-
-colnames(Pika_Total_Count) <- c('Year','Captures')
-
-#Filtering to get Pika dataset to match climate dataset
-  
-Pika_Count_08to18 <- rbind(Pika_2008_Count, Pika_2010_Count, Pika_2011_Count, Pika_2012_Count, Pika_2013_Count, Pika_2014_Count, Pika_2015_Count, Pika_2016_Count, Pika_2017_Count, Pika_2018_Count)
-
-colnames(Pika_Count_08to18) <- c('Year','Captures')
-
-#Regression of Pika Counts over time
-Pika_Total_Count <- Pika_Total_Count %>%
-  mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13))
-
-Pika_Regression <- lm(data = Pika_Total_Count, Captures ~ YearNum)
-summary(Pika_Regression)
-```
-
-```{r}
-#Creating lm of climate mean temps and Pika captures
 
 Climate_Means_08to18_Refined <- Climate_Means_08to18 %>%
   filter(Year!= 2009)
-
-Pika_Temperature <- merge(Pika_Count_08to18, Climate_Means_08to18_Refined, by.x = "Year", by.y = "Year")
-
-Pika_AvgTemp_Regression <- lm(data = Pika_Temperature, Captures ~ Mean_Avg_Temp)
-summary(Pika_AvgTemp_Regression)
-
-Pika_MinTemp_Regression <- lm(data = Pika_Temperature, Captures ~ Mean_Min_Temp)
-summary(Pika_MinTemp_Regression)
-
-Pika_MaxTemp_Regression <- lm(data = Pika_Temperature, Captures ~ Mean_Max_Temp)
-summary(Pika_MaxTemp_Regression)
-
 ```
-
-```{r}
-#Temperature Time Series Analysis
-Climate_Daily_Means_ts <- ts(Climate_08to18_clean$airtemp_avg_interpolated, start = c(2008,1), end = c(2018,365), frequency = 365)
-Climate_Daily_trend <- Kendall::SeasonalMannKendall(Climate_Daily_Means_ts)
-summary(Climate_Daily_trend)
-
-Climate_daily_trend_decomp <- stl(Climate_Daily_Means_ts,s.window = "periodic")
-plot(Climate_daily_trend_decomp)
-
-```
-
-
-```{r}
-#Plots!
-
-#Pika Captures vs Temperature
-
-Pika_AvgTemp_Plot <- ggplot(Pika_Temperature, aes(x=Mean_Avg_Temp, y=Captures)) +
-  geom_point() +
-  geom_smooth(method=lm)
-print(Pika_AvgTemp_Plot)
-
-Pika_MinTemp_Plot <- ggplot(Pika_Temperature, aes(x=Mean_Min_Temp, y=Captures)) +
-  geom_point() +
-  geom_smooth(method=lm)
-print(Pika_MinTemp_Plot)
-
-Pika_MaxTemp_Plot <- ggplot(Pika_Temperature, aes(x=Mean_Max_Temp, y=Captures)) +
-  geom_point() +
-  geom_smooth(method=lm)
-print(Pika_MaxTemp_Plot)
-
-plot_grid(Pika_AvgTemp_Plot, Pika_MinTemp_Plot, Pika_MaxTemp_Plot, nrow = 3, align = 'w')
-
-#Plotting Pika captures per year with lm
-
-Pika_Total_Count_Plot <- ggplot(Pika_Total_Count, aes(x=Year, y=Captures, group=1)) +
-  geom_line() +
-  geom_smooth(method=lm) +
-  ylim(0,50) +
-  mytheme
-  print(Pika_Total_Count_Plot)
-  
-#Temperature over time
-  
-AvgTemp_Plot <- ggplot(Climate_Means_08to18, aes(x=Year, y=Mean_Avg_Temp)) +
-  geom_line() +
-  geom_smooth(method=lm) +
-  mytheme
-  print(AvgTemp_Plot)
-  
-MinTemp_Plot <- ggplot(Climate_Means_08to18, aes(x=Year, y=Mean_Min_Temp)) +
-  geom_line() +
-  geom_smooth(method=lm) +
-  mytheme
-  print(MinTemp_Plot)
-
-MaxTemp_Plot <- ggplot(Climate_Means_08to18, aes(x=Year, y=Mean_Max_Temp)) +
-  geom_line() +
-  geom_smooth(method=lm) +
-  mytheme
-  print(MaxTemp_Plot)
-  
-plot_grid(AvgTemp_Plot, MinTemp_Plot, MaxTemp_Plot, nrow = 3, align = 'w')
-```
-
-```{r}
-#Spatial Analysis
-Pika_Spatial <- Pika_Raw %>%
-  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
-  select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
-  group_by(Year) %>%
-  drop_na(northing, easting)
-
-Mean_Pika_Location <- Pika_Spatial %>%
-  summarise(
-    Mean_Easting = mean(easting, na.rm=T),
-    Mean_Northing = mean(northing, na.rm=T))
-
-Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
-  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
-           crs=2151)
-
-Pika_Locations_sf <- Pika_Spatial %>% 
-  st_as_sf(coords = c('easting','northing'),
-           crs=2151)
-
-Pika_Location_2008_sf <- Pika_Locations_sf %>%
-  filter(Year == 2008)
-
-Pika_Location_2010_sf <- Pika_Locations_sf %>%
-  filter(Year == 2010)
-
-Pika_Location_2011_sf <- Pika_Locations_sf %>%
-  filter(Year == 2011)
-
-Pika_Location_2012_sf <- Pika_Locations_sf %>%
-  filter(Year == 2012)
-
-Pika_Location_2013_sf <- Pika_Locations_sf %>%
-  filter(Year == 2013)
-
-Pika_Location_2014_sf <- Pika_Locations_sf %>%
-  filter(Year == 2014)
-
-Pika_Location_2015_sf <- Pika_Locations_sf %>%
-  filter(Year == 2015)
-
-Pika_Location_2016_sf <- Pika_Locations_sf %>%
-  filter(Year == 2016)
-
-Pika_Location_2017_sf <- Pika_Locations_sf %>%
-  filter(Year == 2017)
-
-Pika_Location_2018_sf <- Pika_Locations_sf %>%
-  filter(Year == 2018)
-
-Pika_Location_2019_sf <- Pika_Locations_sf %>%
-  filter(Year == 2019)
-
-Pika_Location_2020_sf <- Pika_Locations_sf %>%
-  filter(Year == 2020)
-
-Pika_Location_2008_Plot <- ggplot() +
-  geom_sf(data=Pika_Location_2008_sf,color='blue',shape='0',size=2)
-Pika_Location_2008_Plot
-
-Pika_Location_2010_Plot <- ggplot() +
-  geom_sf(data=Pika_Location_2010_sf,color='blue',shape='0',size=2)
-Pika_Location_2010_Plot
-
-plot_grid(Pika_Location_2008_Plot, Pika_Location_2010_Plot, nrow = 1, align = 'h')
-
-mapview(Pika_Locations_sf) + mapview(Mean_Pika_Location_sf)
-```
-
 
 ```{r}
 # Initial wrangling for flea data. In this code chuck I create two dataframes isolating flea and mite data respectively. 
@@ -354,9 +104,8 @@ Fleas_samp_NARemoved <- Fleas_Pika_Processed %>%
   na.omit(fleas_samp)
 ```
 
-
 ```{r}
-#Finding the mean fleas observed per individual Pika by year. We have to do by year because the same Pika may be sampled multiple times in the same year or multiple times over multiple years. If we did a group_by(PikaID) for the entire data set we would group Pika observations over multiple years. 
+#Finding the mean fleas observed per individual Pika by year. We seperate the datafram by year because the same Pika may be sampled multiple times in the same year or multiple times over multiple years. If we did a group_by(PikaID) for the entire data set we would group Pika observations over multiple years. 
 
 Fleas_obs_2010 <- Fleas_obs_NARemoved %>%
   filter(Year == 2010) %>%
@@ -446,7 +195,7 @@ Fleas_obs_2020 <- Fleas_obs_NARemoved %>%
     Year = unique(Year)
   )
 
-#combine the yearly flea observations into one data frame which no longer has repeated Pika observations within the same year. 
+#combine the yearly flea observations into one data frame. The data no longer has repeated Pika observations within the same year. 
 
 Fleas_Obs_10to20 <-
   rbind(Fleas_obs_2010, Fleas_obs_2011, Fleas_obs_2012, Fleas_obs_2013, Fleas_obs_2014, Fleas_obs_2015, Fleas_obs_2016, Fleas_obs_2017, Fleas_obs_2018, Fleas_obs_2019, Fleas_obs_2020)
@@ -456,7 +205,6 @@ Fleas_Obs_10to20 <-
 Fleas_Obs_Climate_Years <-
   rbind(Fleas_obs_2010, Fleas_obs_2011, Fleas_obs_2012, Fleas_obs_2013, Fleas_obs_2014, Fleas_obs_2015, Fleas_obs_2016, Fleas_obs_2017, Fleas_obs_2018)
 ```
-
 
 ```{r}
 #Completing the same process of splitting the data into years, grouping by individual Pika tag IDs, and finding yearly means. This time for fleas sampled, rather than fleas observed. 
@@ -568,7 +316,6 @@ fleas_Samp_Climate_Years <-
   rbind(Fleas_samp_2008, Fleas_samp_2010, Fleas_samp_2011, Fleas_samp_2012, Fleas_samp_2013, Fleas_samp_2014, Fleas_samp_2015, Fleas_samp_2016, Fleas_samp_2017, Fleas_samp_2018)
 ```
 
-
 ```{r}
 #Create data frames with the yearly average fleas observations and samples. 
 
@@ -626,7 +373,6 @@ Climate_and_Flea_Data <- Climate_Means_08to18_Refined %>%
   left_join(Yearly_Fleas_Samp_08to18, by = "Year")
 
 ```
-
 
 ```{r}
 #Wrangling the ear mites sampled data
@@ -843,6 +589,8 @@ Final_Parasite_DF <- Total_Flea_Data %>%
   left_join(All_Mite_Data_08to20, by = "Year") %>%
   mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13))
 
+#convert character columns to numeric so that we can run analysis and plot the data
+
 Final_Parasite_DF$Avg_Fleas_Samp <- 
   as.numeric(Final_Parasite_DF$Avg_Fleas_Samp)
 
@@ -854,118 +602,17 @@ Final_Parasite_DF$Proportion_ear.mite_Samp <-
 Final_Parasite_Climate_DF <- Climate_and_Flea_Data %>%
   left_join(All_Mite_Data_08to18, by = "Year")
 
+#convert character columns to numeric so that we can run analysis and plot the data
+
 Final_Parasite_Climate_DF$Avg_Fleas_Samp <- 
   as.numeric(Final_Parasite_Climate_DF$Avg_Fleas_Samp)
 
 Final_Parasite_Climate_DF$Proportion_ear.mite_Samp <- 
   as.numeric(Final_Parasite_Climate_DF$Proportion_ear.mite_Samp)
 
+#create a climate dataset without the year 2008.
+
 No2008_Parasite_Climate_DF <- Final_Parasite_Climate_DF %>%
   filter(Year != 2008)
   
 ```
-
-```{r}
-#Analysis 
-
-#Parasite observations and sample regression by time
-
-Flea_Obs_Regression <- lm(data = Final_Parasite_DF, Avg_Flea_Obs ~ YearNum)
-summary(Flea_Obs_Regression)
-
-Flea_Samp_Regression <- lm(data = Final_Parasite_DF, Avg_Fleas_Samp ~ YearNum)
-summary(Flea_Samp_Regression)
-
-Mite_Samp_Regression <- lm(data = Final_Parasite_DF, Proportion_ear.mite_Samp ~ YearNum)
-summary(Mite_Samp_Regression)
-
-#Parasite observation and sample regression by temperature 
-
-#Flea Observations
-
-Flea_Obs_AvgTemp_Regression <- lm(data = Final_Parasite_Climate_DF, Avg_Flea_Obs ~ Mean_Avg_Temp)
-summary(Flea_Obs_AvgTemp_Regression)
-
-#Fleas Sampled
-
-Flea_Samp_AvgTemp_Regression <- lm(data = Final_Parasite_Climate_DF, Avg_Fleas_Samp ~ Mean_Avg_Temp)
-summary(Flea_Samp_AvgTemp_Regression)
-
-#Mites Sampled
-
-Mites_Samp_AvgTemp_Regression <- lm(data = Final_Parasite_Climate_DF, Proportion_ear.mite_Samp ~ Mean_Avg_Temp)
-summary(Mites_Samp_AvgTemp_Regression)
-
-```
-
-```{r}
-#Visualizations
-
-#Over Time
-
-Flea_Obs_Plot <- ggplot(Yearly_Flea_Obs_10to20, aes(x= Year, y=Avg_Flea_Obs)) +
-  geom_point() +
-  geom_smooth(method=lm) +
-  scale_x_continuous(breaks = seq(2010, 2020, by = 1)) +
-  ylab("Average Fleas Observed") +
-  ggtitle("Fleas Observed Per Pika Over Time") +
-  theme(plot.title = element_text(hjust = 0.5))
-print(Flea_Obs_Plot)
-
-Flea_Samp_Plot <- ggplot(Final_Parasite_DF, aes(x= Year, y=Avg_Fleas_Samp)) +
-  geom_point() +
-  geom_smooth(method = lm) +
-  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
-  ylab("Average Fleas Sampled") +
-  ggtitle("Fleas Sampled Per Pika Over Time") +
-  theme(plot.title = element_text(hjust = 0.5))
-print(Flea_Samp_Plot)
-
-Mite_Samp_Plot <- ggplot(Final_Parasite_DF, aes(x= Year, y=Proportion_ear.mite_Samp)) +
-  geom_point() +
-  geom_smooth(method = lm) +
-  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
-  ylab("Proportion of Pika with Mites") +
-  ggtitle("Proportion of Pika's With Mites Over Time") +
-  theme(plot.title = element_text(hjust = 0.5))
-print(Mite_Samp_Plot)
-
-#By Temperature
-
-Flea_Obs_AvgTemp_Plot <- ggplot(No2008_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Avg_Flea_Obs)) +
-  geom_point() +
-  geom_smooth(method = lm) +
-  ylab("Average Fleas Observed") +
-  xlab("Average Yearly Temperatrue (F)") +
-  ggtitle("Average Fleas Observed by Temperature") +
-  theme(plot.title = element_text(hjust = 0.5))
-print(Flea_Obs_AvgTemp_Plot)
-
-Flea_Samp_AvgTemp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Avg_Fleas_Samp)) +
-  geom_point() +
-  geom_smooth(method = lm) +
-  ylab("Average Fleas Sampled") +
-  xlab("Average Yearly Temperatrue (F)") +
-  ggtitle("Average Fleas Sampled by Temperature") +
-  theme(plot.title = element_text(hjust = 0.5))
-print(Flea_Samp_AvgTemp_Plot)
-
-Mite_Samp_AvgTemp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Proportion_ear.mite_Samp)) +
-  geom_point() +
-  geom_smooth(method = lm) +
-  ylab("Proportion of Pika with Mites") +
-  xlab("Average Yearly Temperatrue (F)") +
-  ggtitle("Proportion of Pika's With Mites By Temperature") +
-  theme(plot.title = element_text(hjust = 0.5))
-print(Mite_Samp_AvgTemp_Plot)
-
-Mite_Obs_Time_Plot <- ggplot(Longer_Mite_Obs_Counts_08to20, aes(x= Year, y= TotalCounts)) + 
-  geom_line(aes(color = Observations)) +
-  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
-  theme(legend.position = "bottom", 
-        plot.title = element_text(hjust = 0.5)) +
-  ylab("Total Counts") +
-  ggtitle("Cumulative Observation Counts By Year")
-print(Mite_Obs_Time_Plot)
-```
-
