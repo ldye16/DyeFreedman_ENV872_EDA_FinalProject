@@ -330,7 +330,7 @@ mapview(Pika_Locations_sf) + mapview(Mean_Pika_Location_sf)
 ```{r}
 #wrangling for flea data
 
-#Isolating individual Pika captures, this time including flea data. We used the same Pika ID as before to isolate individual Pika's. 
+#Isolating individual Pika captures, this time including flea data. We used the same Pika ID as before to isolate individual Pikas. 
 Fleas_Pika_Processed <- Pika_Raw %>%
   mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
   select(LTER_site:date, Year, easting:num_l_ear, fleas_samp, fleas_obs, PikaID) %>%
@@ -744,7 +744,7 @@ Mites_samp_08to20 <-
 #The above data frame within the climate data date range. 
 
 Mites_samp_08to18 <- 
-  Mites_sampe_08to20 %>%
+  Mites_samp_08to20 %>%
   filter(Year!= 2019,
          Year!= 2020)
 

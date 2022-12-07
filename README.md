@@ -3,12 +3,8 @@ output:
   pdf_document: default
   html_document: default
 ---
-# DyeFreedman_ENV872_EDS_FinalProject
-This repository is for the Final Project of Environmental Data Analytics. 
+# DyeFreedman_ENV872_EDA_FinalProject
 
-
-
-Topic: We are examining Pika demography and climate data from the Niwot Ridge LTER site. Our goal is to understand Pika distribution changes over the past 10-15 years and examine whether there is any connection to the changing alpine climate. We also will investigate the prevalence of pests (mites and fleas) over time. Pika rely on alpine tundra, a habitat severely threatened by climate change, so understanding the population changes would be valuable for future species outlook.
 
 ## Summary
 
@@ -24,7 +20,10 @@ The repository contains raw and processed data files, metadata, information on t
 
 <name(s), affiliation(s), contact information, roles (if applicable)>
 
-Authors: Jacob Freedman and Logan Dye
+Authors: Jacob Freedman and Logan Dye, MEM Students at Duke University Nicholas School of the Environment
+
+jacob.freedman@duke.edu
+logan.dye@duke.edu
 
 ## Keywords
 
@@ -90,15 +89,88 @@ Metadata: Pika Demography Data at Niwot Ridge
 | neck_circ | circumference of neck (cm) | 
 | foot_length | foot length (mm) | 
 
-
-
-
 Metadata: Climate Data at Niwot Ridge
 
 | File/Column Name | Description |
 | --- | --- |
 | d-1cr23x-cr1000.daily.ml.data.csv | Raw Climate Data csv file | 
-| NTL-LTER_Lake_Carbon_Raw.csv | NTL LTER Lake: Carbon data | 
+| LTER_site | Niwot Ridge LTER site | 
+| local_site | C1 site | 
+| logger | data logger type (CR23X or CR1000) | 
+| date | date (yyyy-mm-dd) | 
+| year | year (yyyy) | 
+| jday | Julian day | 
+| airtemp_max | maximum air temperature (C) | 
+| flag_airtemp_max | flag for maximum air temperature: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_min | minimum air temperature (C) | 
+| flag_airtemp_min | flag for minimum air temperature: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_avg | average air temperature (C) | 
+| flag_airtemp_avg | flag for average air temperature: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_max | maximum relative humidity (Percent) | 
+| flag_rh_max | flag for maximum relative humidity: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_min | minimum relative humidity (Percent) | 
+| flag_rh_min | flag for minimum relative humidity: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_avg | average relative humidity (Percent) | 
+| flag_rh_avg | flag for average relative humidity: n=no flag; m=missing; q=questionable; e=estimated | 
+| bp_max | maximum barometric pressure (Millibars) | 
+| flag_bp_max | flag for maximum barometric pressure: n=no flag; m=missing; q=questionable; e=estimated | 
+| bp_min | minimum barometric pressure (Millibars) | 
+| flag_bp_min | flag for minimum barometric pressure: n=no flag; m=missing; q=questionable; e=estimated | 
+| bp_avg | average barometric pressure (Millibars) | 
+| flag_bp_avg | flag for average barometric pressure: n=no flag; m=missing; q=questionable; e=estimated | 
+| ws_max | maximum wind speed (m/s) | 
+| flag_ws_max | flag for maximum wind speed: n=no flag; m=missing; q=questionable; e=estimated | 
+| ws_min | minimum wind speed (m/s) | 
+| flag_ws_min | flag for minimum wind speed: n=no flag; m=missing; q=questionable; e=estimated | 
+| ws_avg | average wind speed (m/s) | 
+| flag_ws_avg | flag for average wind speed: n=no flag; m=missing; q=questionable; e=estimated | 
+| wd | average wind direction (degree) | 
+| flag_wd | flag for average wind direction: n=no flag; m=missing; q=questionable; e=estimated | 
+| solrad_avg (Watt/m^2)|  | 
+| flag_solrad_avg | flag for average solar radiation: n=no flag; m=missing; q=questionable; e=estimated | 
+| solrad_tot | total solar radiation (Watt/m^2) | 
+| flag_solrad_tot | flag for total solar radiation: n=no flag; m=missing; q=questionable; e=estimated | 
+| soiltemp_5cm_avg | average soil temperature at 5cm (C) | 
+| flag_soiltemp_5cm_avg | flag for soil temp at 5cm: n=no flag; m=missing; q=questionable; e=estimated | 
+| soilmoist_5cm_avg | average soil moisture at 5cm | 
+| flag_soilmoist_5cm_avg | flag for soil moisture at 5cm: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_hmp1_max | maximum air temperature sensor 1 (C) | 
+| flag_airtemp_hmp1_max | flag for maximum air temperature sensor 1: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_hmp1_min |  q=questionable; e=estimated	minimum air temperature sensor 1 (C) | 
+| flag_airtemp_hmp1_min | flag for minimum air temperature sensor 1: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_hmp1_avg | average air temperature sensor 1 (C) | 
+| flag_airtemp_hmp1_avg | flag for average air temperature sensor 1: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_hmp2_max | maximum air temperature sensor 2 (C) | 
+| flag_airtemp_hmp2_max | flag for maximum air temperature sensor 2: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_hmp2_min | minimum air temperature sensor 2 (C) | 
+| flag_airtemp_hmp2_min | flag for minimum air temperature sensor 2: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_hmp2_avg | average air temperature sensor 2 (C) | 
+| flag_airtemp_hmp2_avg | flag for average air temperature sensor 2: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_hmp3_max | maximum air temperature sensor 3 (C) | 
+| flag_airtemp_hmp3_max | flag for maximum air temperature sensor 3: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_hmp3_min | minimum air temperature sensor 3 (C) | 
+| flag_airtemp_hmp3_min | flag for minimum air temperature sensor 3: n=no flag; m=missing; q=questionable; e=estimated | 
+| airtemp_hmp3_avg | average air temperature sensor 3 (C) | 
+| flag_airtemp_hmp3_avg | flag for average air temperature sensor 3: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_hmp1_max | maximum relative humidity sensor 1 (Percent) | 
+| flag_rh_hmp1_max | flag for maximum relative humidity sensor 1: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_hmp1_min | minimum relative humidity sensor 1 (Percent) | 
+| flag_rh_hmp1_min | flag for minimum relative humidity sensor 1: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_hmp1_avg | average relative humidity sensor 1 (Percent) | 
+| flag_rh_hmp1_avg | flag for average relative humidity sensor 1: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_hmp2_max | maximum relative humidity sensor 2 (Percent) | 
+| flag_rh_hmp2_max | flag for maximum relative humidity sensor 2: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_hmp2_min | minimum relative humidity sensor 2 (Percent) | 
+| flag_rh_hmp2_min | flag for minimum relative humidity sensor 2: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_hmp2_avg | average relative humidity sensor 2 (Percent) | 
+| flag_rh_hmp2_avg | flag for average relative humidity sensor 2: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_hmp3_max | maximum relative humidity sensor 3 (Percent) | 
+| flag_rh_hmp3_max | flag for maximum relative humidity sensor 3: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_hmp3_min | minimum relative humidity sensor 3 (Percent) | 
+| flag_rh_hmp3_min | flag for minimum relative humidity sensor 3: n=no flag; m=missing; q=questionable; e=estimated | 
+| rh_hmp3_avg | average relative humidity sensor 3 (Percent) | 
+| flag_rh_hmp3_avg | flag for average relative humidity sensor 3: n=no flag; m=missing; q=questionable; e=estimated | 
+
 
 ## Scripts and code
 
