@@ -25,7 +25,7 @@ mainfont: Times New Roman
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=45), tidy=TRUE)
 
 # Set your working directory
-setwd("~DyeFreedman_ENV872_EDA_FinalProject")
+setwd("~/DyeFreedman_ENV872_EDA_FinalProject")
 getwd()
 
 # Load your packages
@@ -45,7 +45,10 @@ mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
         legend.position = "top")
 theme_set(mytheme)
+```
 
+
+```{r}
 # Load your datasets
 Pika_Raw <- read.csv("./Data/Raw/pika_demography.cr.data.csv", stringsAsFactors = TRUE)
 Climate_Raw <- read.csv("./Data/Raw/d-1cr23x-cr1000.daily.ml.data.csv", stringsAsFactors = TRUE)
@@ -83,12 +86,20 @@ Pika spatial distribution changes:
 
 To assess spatial changes, observations without spatial attributes (easting, northing) were eliminated. Mean annual pika locations were determined by summarizing the easting and northing columns. Both individual and mean annual locations were converted to spatial data frames using the NAD83 Zone 13N projected coordinate system. 
 
+Parasite Data: 
+
+To determine if there was a change in parasite abundance over time and with changing temperatures, the flea and ear mite data first needed to be isolated from the total pika demography data. The flea and ear mite data within the demography data are flea observations, fleas sampled, ear mite observations, and ear mites sampled. For both flea observations and fleas sampled, the recorded value equates to the number of individual fleas either observed on or sampled from the individual pika. However, for ear mites sampled, the recorded values are binary. A "0" is recorded for individual pikas that did not have ear mites sampled, and a "1" is recorded for pikas that were sampled. For ear mites observed, the data is represented in categories. The categories are "N" for none observed, "L" for low density, "M" for medium density, "H" for high density, "NA" for individuals whose data was not recorded in the main trapping notebook, and "NS" for Pikas who were not sampled for mites in this way. There are also a few instances of either a "0" or a "1" being recorded and a single recording of "N?". 
+
+Once we had isolated the flea and ear mite data from the demography data, we split the dataframe into two, one with only flea data and one with only ear mite data. For the flea data, we grouped by PikaID to isolate individual pikas that were recaptured in a given year. Next, we split the data by year and found the mean value of fleas sampled and fleas observed per pika for each year. We then merged the single-year dataframes to create one dataframe with the average number of fleas observed and sampled per pika per year. We wrangled the mite sampled data the same way. However, since the data was binary, either "0" or "1", the resulting ear mite sampled column represented a proportion of captured pikas sampled for ear mites. Generally, if ear mites were observed on a pika, they were sampled. This means the proportion of pikas sampled for ear mites represents the proportion of total pikas captured in a given year with ear mites present. 
+
+For ear mite observed data, we used a different wrangling technique to account for the categorical data. The NA, NS, 0, 1, and N? observations were all dropped. We retained only observations where ear mite observation data was collected. These are N, L, M, and H. Once we had selected the variables we wanted, we grouped them by year and observation type and summed the amount of each observation variable recorded for a year. This gave us a total count for each observation variable for each year. To account for the different number of pika captures each year, we converted the data from a count total to the proportion of each categorical variable represented each year.
+
+In the final step, we joined the wrangled flea and mite dataframes into one final parasite dataframe. The final parasite dataframe was then joined to the climate data, and we had our final merged parasite and climate dataframe. 
 
 
 \newpage
 
 # Exploratory Analysis 
-
 
 
 \newpage
@@ -105,8 +116,7 @@ To assess spatial changes, observations without spatial attributes (easting, nor
 
 ##Question 4:  One well documented effect of warming temperatures is an increase in zoonotic diseases. Is mite and flea prevalence in Pikas changing over time and with temperature?
 
-
-
+To analyze this question, linear regressions were ran on flea and mite data over both time and temperature. 
 
 \newpage
 

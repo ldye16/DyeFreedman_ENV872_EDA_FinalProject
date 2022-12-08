@@ -33,3 +33,33 @@ Pika_AvgTemp_Regression <- lm(data = Pika_Temperature, Captures ~ Mean_Avg_Temp)
 summary(Pika_AvgTemp_Regression)
 ```
 
+##Regression of Flea Observed over Time and vs. Temperature
+
+```{r}
+Flea_Obs_Regression <- lm(data = Final_Parasite_DF, Avg_Flea_Obs ~ YearNum)
+summary(Flea_Obs_Regression)
+
+Flea_Obs_AvgTemp_Regression <- lm(data = Final_Parasite_Climate_DF, Avg_Flea_Obs ~ Mean_Avg_Temp)
+summary(Flea_Obs_AvgTemp_Regression)
+```
+
+##Regression of Flea Sampled over Time and vs. Temperature
+
+```{r}
+Flea_Samp_Regression <- lm(data = Final_Parasite_DF, Avg_Fleas_Samp ~ YearNum)
+summary(Flea_Samp_Regression)
+
+Flea_Samp_AvgTemp_Regression <- lm(data = Final_Parasite_Climate_DF, Avg_Fleas_Samp ~ Mean_Avg_Temp)
+summary(Flea_Samp_AvgTemp_Regression)
+```
+
+##Regression of Mites Sampled over Time and vs. Temperature 
+
+```{r}
+Mite_Samp_Regression <- lm(data = Final_Parasite_DF, Proportion_ear.mite_Samp ~ YearNum)
+summary(Mite_Samp_Regression)
+
+Mites_Samp_AvgTemp_Regression <- lm(data = Final_Parasite_Climate_DF, Proportion_ear.mite_Samp ~ Mean_Avg_Temp)
+summary(Mites_Samp_AvgTemp_Regression)
+```
+

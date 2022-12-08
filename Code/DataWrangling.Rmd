@@ -715,7 +715,7 @@ No2008_Parasite_Climate_DF <- Final_Parasite_Climate_DF %>%
   
 ```
 
-##Spatial Analysis
+##Spatial Data Wrangling
 
 ```{r}
 #Dropping observations without spatial data
@@ -724,6 +724,12 @@ Pika_Spatial <- Pika_Raw %>%
   select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
   group_by(Year) %>%
   drop_na(northing, easting)
+
+#Creating a spatial dataframe of Pika captures 
+
+Pika_Locations_sf <- Pika_Spatial %>% 
+  st_as_sf(coords = c('easting','northing'),
+           crs=2151)
 
 #Calculating mean annual pika capture locations
 
@@ -735,47 +741,5 @@ Mean_Pika_Location <- Pika_Spatial %>%
 Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
   st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
            crs=2151)
-
-#Creating a spatial dataframe of Pika captures and then dividing into distinct dataframes by year
-
-Pika_Locations_sf <- Pika_Spatial %>% 
-  st_as_sf(coords = c('easting','northing'),
-           crs=2151)
-
-Pika_Location_2008_sf <- Pika_Locations_sf %>%
-  filter(Year == 2008)
-
-Pika_Location_2010_sf <- Pika_Locations_sf %>%
-  filter(Year == 2010)
-
-Pika_Location_2011_sf <- Pika_Locations_sf %>%
-  filter(Year == 2011)
-
-Pika_Location_2012_sf <- Pika_Locations_sf %>%
-  filter(Year == 2012)
-
-Pika_Location_2013_sf <- Pika_Locations_sf %>%
-  filter(Year == 2013)
-
-Pika_Location_2014_sf <- Pika_Locations_sf %>%
-  filter(Year == 2014)
-
-Pika_Location_2015_sf <- Pika_Locations_sf %>%
-  filter(Year == 2015)
-
-Pika_Location_2016_sf <- Pika_Locations_sf %>%
-  filter(Year == 2016)
-
-Pika_Location_2017_sf <- Pika_Locations_sf %>%
-  filter(Year == 2017)
-
-Pika_Location_2018_sf <- Pika_Locations_sf %>%
-  filter(Year == 2018)
-
-Pika_Location_2019_sf <- Pika_Locations_sf %>%
-  filter(Year == 2019)
-
-Pika_Location_2020_sf <- Pika_Locations_sf %>%
-  filter(Year == 2020)
 ```
 
