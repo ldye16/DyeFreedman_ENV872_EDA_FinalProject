@@ -21,6 +21,7 @@ library(maps)
 library(trend)
 library(Kendall)
 library(tseries)
+library(leaflet)
 
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
@@ -273,13 +274,20 @@ Mean_Pika_Location <- Pika_Spatial %>%
 
 Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
   st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
-           crs=2151)
+           crs=2151) %>%
+  filter(Year!= 2018, Year!= 2008)
+
+Mean_Pika_Location_sf2 <- Mean_Pika_Location %>% 
+  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
+           crs=2151) %>%
+  filter(Year == 2018 | 
+         Year == 2008)
 
 #Creating a spatial dataframe of Pika captures and then dividing into distinct dataframes by year
 
 Pika_Locations_sf <- Pika_Spatial %>% 
   st_as_sf(coords = c('easting','northing'),
-           crs=2151)
+           crs=2151) 
 
 Pika_Location_2008_sf <- Pika_Locations_sf %>%
   filter(Year == 2008)
@@ -327,7 +335,25 @@ Pika_Location_2010_Plot
 
 plot_grid(Pika_Location_2008_Plot, Pika_Location_2010_Plot, nrow = 1, align = 'h')
 
-mapview(Pika_Locations_sf) + mapview(Mean_Pika_Location_sf)
+mapview(Pika_Locations_sf) 
+
+mapview(Mean_Pika_Location_sf) %>%
+  leafem::addStaticLabels(label = Mean_Pika_Location_sf$Year,
+                  noHide = TRUE,
+                  direction = "left",
+                  textOnly = TRUE,
+                  textsize = "20px") + 
+  mapview(Mean_Pika_Location_sf2) %>%
+  leafem::addStaticLabels(label = Mean_Pika_Location_sf2$Year,
+                  noHide = TRUE,
+                  direction = "right",
+                  textOnly = TRUE,
+                  textsize = "20px")
+
+Spatial_1 
+Spatial_2
+
+  
 ```
 
 
@@ -845,7 +871,13 @@ All_Mite_Data_08to18 <- Yearly_Mite_Samp_08to18 %>%
 
 Final_Parasite_DF <- Total_Flea_Data %>%
   left_join(All_Mite_Data_08to20, by = "Year") %>%
-  mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13))
+  mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13)) %>%
+  group_by(Year) %>%
+  mutate(TotalObs = sum(L,M,N,H),
+         PropL = L/TotalObs,
+         PropM = M/TotalObs,
+         PropN = N/TotalObs,
+         PropH = H/TotalObs) 
 
 Final_Parasite_DF$Avg_Fleas_Samp <- 
   as.numeric(Final_Parasite_DF$Avg_Fleas_Samp)
@@ -856,7 +888,7 @@ Final_Parasite_DF$Proportion_ear.mite_Samp <-
 #Create a final parasite data frame and combine it with the Climate Data. 
 
 Final_Parasite_Climate_DF <- Climate_and_Flea_Data %>%
-  left_join(All_Mite_Data_08to18, by = "Year")
+  left_join(Final_Parasite_DF, by = "Year")
 
 Final_Parasite_Climate_DF$Avg_Fleas_Samp <- 
   as.numeric(Final_Parasite_Climate_DF$Avg_Fleas_Samp)
@@ -963,13 +995,29 @@ Mite_Samp_AvgTemp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x= Mean_Avg_Temp
   theme(plot.title = element_text(hjust = 0.5))
 print(Mite_Samp_AvgTemp_Plot)
 
-Mite_Obs_Time_Plot <- ggplot(Longer_Mite_Obs_Counts_08to20, aes(x= Year, y= TotalCounts)) + 
-  geom_line(aes(color = Observations)) +
+#Mite Observation Linegraph
+
+Mite_PropObs_Time_Plot <- ggplot(Final_Parasite_DF, aes(x = Year)) + 
+  geom_line(aes(y= PropL, color = "PropL")) + 
+  geom_line(aes(y= PropM, color = "PropM")) +
+  geom_line(aes(y= PropH, color = "PropH")) +
+  geom_line(aes(y= PropN, color = "PropN")) + 
   scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
   theme(legend.position = "bottom", 
         plot.title = element_text(hjust = 0.5)) +
   ylab("Total Counts") +
   ggtitle("Cumulative Observation Counts By Year")
-print(Mite_Obs_Time_Plot)
+print(Mite_PropObs_Time_Plot)
+
+Mite_PropObs_Temp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x = Mean_Avg_Temp)) + 
+  geom_line(aes(y= PropL, color = "PropL")) + 
+  geom_line(aes(y= PropM, color = "PropM")) +
+  geom_line(aes(y= PropH, color = "PropH")) +
+  geom_line(aes(y= PropN, color = "PropN")) + 
+  theme(legend.position = "bottom", 
+        plot.title = element_text(hjust = 0.5)) +
+  ylab("Total Counts") +
+  ggtitle("Cumulative Observation Counts By Average Yearly Temp (F)")
+print(Mite_PropObs_Temp_Plot)
 ```
 
