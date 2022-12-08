@@ -163,12 +163,12 @@ colnames(Pika_Count_08to18) <- c('Year','Captures')
 Pika_Temperature <- merge(Pika_Count_08to18, Climate_Means_08to18_Refined, by.x = "Year", by.y = "Year")
 ```
 
-##Parasite Data Wrangling
+##Flea Data Wrangling
 
 ```{r}
-# Initial wrangling for flea data. In this code chuck I create two dataframes isolating flea and mite data respectively. 
+# Initial wrangling for flea data. In this code chuck I create two data frames isolating flea and mite data respectively. 
 
-#Isolating individual Pika captures, and including flea data. We created a specific PikaID to account for repreated captures of the same individual within the same year. 
+#Isolating individual Pika captures, and including flea data. We created a specific PikaID to account for repeated captures of the same individual within the same year. 
 Fleas_Pika_Processed <- Pika_Raw %>%
   mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
   select(LTER_site:date, Year, easting:num_l_ear, fleas_samp, fleas_obs, PikaID) %>%
@@ -193,7 +193,7 @@ Fleas_samp_NARemoved <- Fleas_Pika_Processed %>%
 ```
 
 ```{r}
-#Finding the mean fleas observed per individual Pika by year. We seperate the datafram by year because the same Pika may be sampled multiple times in the same year or multiple times over multiple years. If we did a group_by(PikaID) for the entire data set we would group Pika observations over multiple years. 
+#Finding the mean fleas observed per individual Pika by year. We separate the data frame by year because the same Pika may be sampled multiple times in the same year or multiple times over multiple years. If we did a group_by(PikaID) for the entire data set we would group Pika observations over multiple years. 
 
 Fleas_obs_2010 <- Fleas_obs_NARemoved %>%
   filter(Year == 2010) %>%
@@ -462,6 +462,8 @@ Climate_and_Flea_Data <- Climate_Means_08to18_Refined %>%
 
 ```
 
+##Ear Mite Data Wrangling
+
 ```{r}
 #Wrangling the ear mites sampled data
 
@@ -670,12 +672,20 @@ All_Mite_Data_08to18 <- Yearly_Mite_Samp_08to18 %>%
 
 ```
 
+#Joining of Ear Mite, Flea, and Climate Data. 
+
 ```{r}
 #Create the final parasite data frame with total flea and mite data over the entire study timeline. 
 
 Final_Parasite_DF <- Total_Flea_Data %>%
   left_join(All_Mite_Data_08to20, by = "Year") %>%
-  mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13))
+  mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13)) %>%
+  group_by(Year) %>%
+  mutate(TotalObs = sum(L,M,N,H),
+         PropL = L/TotalObs,
+         PropM = M/TotalObs,
+         PropN = N/TotalObs,
+         PropH = H/TotalObs) 
 
 #convert character columns to numeric so that we can run analysis and plot the data
 
