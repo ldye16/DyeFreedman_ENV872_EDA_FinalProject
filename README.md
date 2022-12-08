@@ -8,7 +8,7 @@ output:
 
 ## Summary
 
-This repository was created to facilitate data storage and analysis for a research project analyzing the effects of climate change on the American pika at Niwot Ridge, CO. The goal was to understand pika population changes over the past 10-15 years and examine the connection to a changing alpine climate. The prevalence of pests (mites and fleas) found on pikas was also assessed over time, as an increase in disease is a widely accepted consequence of climate change. 
+This repository was created to facilitate data storage and analysis for a research project analyzing the effects of climate change on the American pika at Niwot Ridge, CO. The goal was to understand pika population changes over the past 10-15 years and examine the connection to a changing alpine climate. The prevalence of parasites (mites and fleas) found on pikas was also assessed over time, as an increase in disease is a widely accepted consequence of climate change. 
 
 The repository contains raw and processed data files, metadata, information on the data sources, and code used for wrangling, analysis, and visualization. 
 
@@ -23,7 +23,7 @@ logan.dye@duke.edu
 
 ## Keywords
 
-Pika, climate change, temperature, alpine tundra, disease, pests, spatial analysis, population analysis
+Pika, climate change, temperature, alpine tundra, disease, parasites, spatial analysis, population analysis
 
 
 ## Database Information

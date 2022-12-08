@@ -23,8 +23,6 @@ Climate_daily_trend_decomp <- stl(Climate_Daily_Means_ts,s.window = "periodic")
 
 ```{r}
 #Regression of Pika Counts over time
-Pika_Total_Count <- Pika_Total_Count %>%
-  mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13))
 
 Pika_Regression <- lm(data = Pika_Total_Count, Captures ~ YearNum)
 summary(Pika_Regression)

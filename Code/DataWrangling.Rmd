@@ -131,7 +131,7 @@ Pika_2020 <- Pika_Processed %>%
   filter(Year == 2020)
 length(unique(Pika_2020$PikaID))
 
-#Taking value from count and putting it into a data frame. Each annual data frame has two values (year and number of captures).
+#Taking value from count and putting it into a dataframe. Each annual dataframe has two values (year and number of captures).
 
 Pika_2008_Count <- as.data.frame(table(Pika_2008$Year))
 Pika_2010_Count <- as.data.frame(table(Pika_2010$Year))
@@ -146,11 +146,14 @@ Pika_2018_Count <- as.data.frame(table(Pika_2018$Year))
 Pika_2019_Count <- as.data.frame(table(Pika_2019$Year))
 Pika_2020_Count <- as.data.frame(table(Pika_2020$Year))
 
-#Using rbind to compile 1 data frame of annual captures.
+#Using rbind to compile 1 dataframe of annual captures.
 
 Pika_Total_Count <- rbind(Pika_2008_Count, Pika_2010_Count, Pika_2011_Count, Pika_2012_Count, Pika_2013_Count, Pika_2014_Count, Pika_2015_Count, Pika_2016_Count, Pika_2017_Count, Pika_2018_Count, Pika_2019_Count, Pika_2020_Count)
 
 colnames(Pika_Total_Count) <- c('Year','Captures')
+
+Pika_Total_Count <- Pika_Total_Count %>%
+  mutate(YearNum = c(1,3,4,5,6,7,8,9,10,11,12,13))
 
 #Filtering to get Pika dataset to match climate dataset
   
@@ -163,10 +166,38 @@ colnames(Pika_Count_08to18) <- c('Year','Captures')
 Pika_Temperature <- merge(Pika_Count_08to18, Climate_Means_08to18_Refined, by.x = "Year", by.y = "Year")
 ```
 
+##Spatial Data Wrangling
+
+```{r}
+#Dropping observations without spatial data
+Pika_Spatial <- Pika_Raw %>%
+  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
+  select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
+  group_by(Year) %>%
+  drop_na(northing, easting)
+
+#Creating a spatial dataframe of Pika captures 
+
+Pika_Locations_sf <- Pika_Spatial %>% 
+  st_as_sf(coords = c('easting','northing'),
+           crs=2151)
+
+#Calculating mean annual pika capture locations
+
+Mean_Pika_Location <- Pika_Spatial %>%
+  summarise(
+    Mean_Easting = mean(easting),
+    Mean_Northing = mean(northing))
+
+Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
+  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
+           crs=2151)
+```
+
 ##Flea Data Wrangling
 
 ```{r}
-# Initial wrangling for flea data. In this code chuck I create two data frames isolating flea and mite data respectively. 
+# Initial wrangling for flea data. In this code chuck I create two dataframes isolating flea and mite data respectively. 
 
 #Isolating individual Pika captures, and including flea data. We created a specific PikaID to account for repeated captures of the same individual within the same year. 
 Fleas_Pika_Processed <- Pika_Raw %>%
@@ -193,7 +224,7 @@ Fleas_samp_NARemoved <- Fleas_Pika_Processed %>%
 ```
 
 ```{r}
-#Finding the mean fleas observed per individual Pika by year. We separate the data frame by year because the same Pika may be sampled multiple times in the same year or multiple times over multiple years. If we did a group_by(PikaID) for the entire data set we would group Pika observations over multiple years. 
+#Finding the mean fleas observed per individual Pika by year. We separate the dataframe by year because the same Pika may be sampled multiple times in the same year or multiple times over multiple years. If we did a group_by(PikaID) for the entire data set we would group Pika observations over multiple years. 
 
 Fleas_obs_2010 <- Fleas_obs_NARemoved %>%
   filter(Year == 2010) %>%
@@ -283,7 +314,7 @@ Fleas_obs_2020 <- Fleas_obs_NARemoved %>%
     Year = unique(Year)
   )
 
-#combine the yearly flea observations into one data frame. The data no longer has repeated Pika observations within the same year. 
+#combine the yearly flea observations into one dataframe. The data no longer has repeated Pika observations within the same year. 
 
 Fleas_Obs_10to20 <-
   rbind(Fleas_obs_2010, Fleas_obs_2011, Fleas_obs_2012, Fleas_obs_2013, Fleas_obs_2014, Fleas_obs_2015, Fleas_obs_2016, Fleas_obs_2017, Fleas_obs_2018, Fleas_obs_2019, Fleas_obs_2020)
@@ -393,7 +424,7 @@ Fleas_samp_2020 <- Fleas_samp_NARemoved %>%
     Year = unique(Year)
   )
 
-#combine the yearly flea samples into one data frame which no longer has repeated Pika observations within the same year.
+#combine the yearly flea samples into one dataframe which no longer has repeated Pika observations within the same year.
 
 Fleas_Samp_08to20 <- 
   rbind(Fleas_samp_2008, Fleas_samp_2010, Fleas_samp_2011, Fleas_samp_2012, Fleas_samp_2013, Fleas_samp_2014, Fleas_samp_2015, Fleas_samp_2016, Fleas_samp_2017, Fleas_samp_2018, Fleas_samp_2019, Fleas_samp_2020)
@@ -405,7 +436,7 @@ fleas_Samp_Climate_Years <-
 ```
 
 ```{r}
-#Create data frames with the yearly average fleas observations and samples. 
+#Create dataframes with the yearly average fleas observations and samples. 
 
 #Total Flea Observation by year
 Yearly_Fleas_Obs_10to20_pipe <- Fleas_Obs_10to20 %>%
@@ -417,7 +448,7 @@ Yearly_Fleas_Obs_10to20_pipe <- Fleas_Obs_10to20 %>%
 
 colnames(Yearly_Fleas_Obs_10to20_pipe) <- c("Year", "Average", "Avg_Flea_Obs")
 
-#select for the variables I want in my processed data frame.
+#select for the variables I want in my processed dataframe.
 
 Yearly_Flea_Obs_10to20 <- Yearly_Fleas_Obs_10to20_pipe %>%
   select(Year, Avg_Flea_Obs) 
@@ -589,7 +620,7 @@ Mites_samp_2020 <- Mites_samp_NARemoved %>%
 Mites_samp_08to20 <-
   rbind(Mites_samp_2008, Mites_samp_2010, Mites_samp_2011, Mites_samp_2012, Mites_samp_2013, Mites_samp_2014, Mites_samp_2015, Mites_samp_2016, Mites_samp_2017, Mites_samp_2018, Mites_samp_2019, Mites_samp_2020)
 
-#The above data frame within the climate data date range. 
+#The above dataframe within the climate data date range. 
 
 Mites_samp_08to18 <- 
   Mites_samp_08to20 %>%
@@ -660,12 +691,12 @@ Mite_Obs_Counts_08to18 <- Mite_Obs_Counts_08to20 %>%
 ```
 
 ```{r}
-#Create a data frame with all mite data
+#Create a dataframe with all mite data
 
 All_Mite_Data_08to20 <- Yearly_Mite_Samp_08to20 %>%
   left_join(Mite_Obs_Counts_08to20, by = "Year") 
 
-#Create a data frame with all mite data within the climate data range 
+#Create a dataframe with all mite data within the climate data range 
 
 All_Mite_Data_08to18 <- Yearly_Mite_Samp_08to18 %>%
   left_join(Mite_Obs_Counts_08to18, by = "Year")
@@ -675,7 +706,7 @@ All_Mite_Data_08to18 <- Yearly_Mite_Samp_08to18 %>%
 #Joining of Ear Mite, Flea, and Climate Data. 
 
 ```{r}
-#Create the final parasite data frame with total flea and mite data over the entire study timeline. 
+#Create the final parasite dataframe with total flea and mite data over the entire study timeline. 
 
 Final_Parasite_DF <- Total_Flea_Data %>%
   left_join(All_Mite_Data_08to20, by = "Year") %>%
@@ -695,7 +726,7 @@ Final_Parasite_DF$Avg_Fleas_Samp <-
 Final_Parasite_DF$Proportion_ear.mite_Samp <- 
   as.numeric(Final_Parasite_DF$Proportion_ear.mite_Samp)
 
-#Create a final parasite data frame and combine it with the Climate Data. 
+#Create a final parasite dataframe and combine it with the Climate Data. 
 
 Final_Parasite_Climate_DF <- Climate_and_Flea_Data %>%
   left_join(All_Mite_Data_08to18, by = "Year")
@@ -713,33 +744,5 @@ Final_Parasite_Climate_DF$Proportion_ear.mite_Samp <-
 No2008_Parasite_Climate_DF <- Final_Parasite_Climate_DF %>%
   filter(Year != 2008)
   
-```
-
-##Spatial Data Wrangling
-
-```{r}
-#Dropping observations without spatial data
-Pika_Spatial <- Pika_Raw %>%
-  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
-  select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
-  group_by(Year) %>%
-  drop_na(northing, easting)
-
-#Creating a spatial dataframe of Pika captures 
-
-Pika_Locations_sf <- Pika_Spatial %>% 
-  st_as_sf(coords = c('easting','northing'),
-           crs=2151)
-
-#Calculating mean annual pika capture locations
-
-Mean_Pika_Location <- Pika_Spatial %>%
-  summarise(
-    Mean_Easting = mean(easting),
-    Mean_Northing = mean(northing))
-
-Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
-  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
-           crs=2151)
 ```
 

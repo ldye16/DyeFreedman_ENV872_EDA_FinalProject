@@ -1,0 +1,325 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  12pt,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+  \setmainfont[]{Times New Roman}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=2.54cm]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Pika Distribution and Trends at Niwot Ridge},
+  pdfauthor={Jacob Freedman and Logan Dye},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Pika Distribution and Trends at Niwot Ridge}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{\url{https://github.com/ldye16/DyeFreedman_ENV872_EDA_FinalProject}}
+\author{Jacob Freedman and Logan Dye}
+\date{}
+
+\begin{document}
+\maketitle
+
+\newpage
+\tableofcontents 
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load your datasets}
+\NormalTok{Pika\_Raw }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"./Data/Raw/pika\_demography.cr.data.csv"}\NormalTok{,}
+    \AttributeTok{stringsAsFactors =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{Climate\_Raw }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"./Data/Raw/d{-}1cr23x{-}cr1000.daily.ml.data.csv"}\NormalTok{,}
+    \AttributeTok{stringsAsFactors =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{rationale-and-research-questions}{%
+\section{Rationale and Research
+Questions}\label{rationale-and-research-questions}}
+
+The American Pika is a threatened small mammal endemic to alpine tundra
+habitat in the Rocky Mountains and Sierra Nevadas. Climate change is a
+growing threat worldwide, and is expected to have a particular impact on
+high elevation habitats. Pikas are sensitive to both temperature and
+changes in the water balance (impacted by seasonality of snowmelt), so
+climate change could undoubtedly threaten their long-term viability. In
+addition, as Pikas occupy habitat at the tops of mountain ridges, their
+possible migration either northward or to higher ridges would involve
+them crossing over lower elevation valleys. Their ability to do so is
+unknown, which makes their possibility of survival even murkier.
+
+Niwot Ridge is one of the most heavily studied alpine areas in the Rocky
+Mountains. It is home to multiple research projects, as it is both a
+NEON and LTER Site. LTER researchers have gathered data on Pika
+demography and climate over the past 10-20 years. We used multiple
+public datasets to answer multiple questions regarding trends in climate
+and Pika populations at Niwot Ridge.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Is temperature changing over time at Niwot Ridge?
+\item
+  Are Pika populations changing over time and is there a correlation
+  between population changes and temperature changes?
+\item
+  Are Pika populations changing spatially over time? Are they seeking
+  higher elevation sites?
+\item
+  An increase in zoonotic diseases is a well documented effect of
+  warming temperatures. Is mite and flea prevalence in Pikas changing
+  over time and with temperature?
+\end{enumerate}
+
+\newpage
+
+\hypertarget{dataset-information-and-wrangling}{%
+\section{Dataset Information and
+Wrangling}\label{dataset-information-and-wrangling}}
+
+Both climate and pika data was sourced from the Niwot Ridge LTER
+website. All datasets are for public use and are available here:
+\url{https://nwt.lternet.edu/data-catalog} Significant wrangling was
+required to answer the research questions. The general process is
+explained below for each research question.
+
+Temperature changes over time:
+
+Climate data was available from 2000 to 2021, but we selected for years
+in which there was an overlap of available temperature data with the
+Pika data (2008 to 2018). The dataset contained the site and device
+names, daily min, max, and avg air temperature, relative humidity,
+barometric pressure, wind speed/direction, solar radiation and soil
+temperature. We then used the package ``zoo'' to interpolate NA values
+in the temperature data.
+
+Pika population changes over time and in relation to temperature:
+
+Pika data was available from 2008 to 2020, but we selected for years in
+which there was an overlap of available Pika data with the temperature
+data (2008 to 2018). The dataset contained the site, data, slope aspect,
+location of capture, identification information, demography data,
+biological samples collected and pest presence. In order to estimate
+population over time, we identified annual Pika captures at Niwot Ridge.
+This required eliminating any possibility of recounts within the same
+year. We first filtered out any captures that did not have a ``tag
+type'', meaning that they were not tagged at all and not enough
+information is provided to rule it out as a recapture. Second, we
+filtered out observations where the tag type was recorded, but for an
+unknown reason none of the tag information (ear tag color or number
+code) was recorded. Finally, we split the dataset into separate datasets
+for each year and found the number of unique tag IDs to derive annual
+counts.
+
+To prepare for our temperature and pika abundance regressions, we needed
+to calculate mean annual temperature values. We took the interpolated
+temperature dataset and grouped by year, then summarized by average
+daily temperature to calculate annual means.
+
+Pika spatial distribution changes:
+
+To assess spatial changes, observations without spatial attributes
+(easting, northing) were eliminated. Mean annual pika locations were
+determined by summarizing the easting and northing columns. Both
+individual and mean annual locations were converted to spatial data
+frames using the NAD83 Zone 13N projected coordinate system.
+
+Parasite Data:
+
+To determine if there was a change in parasite abundance over time and
+with changing temperatures, the flea and ear mite data first needed to
+be isolated from the total pika demography data. The flea and ear mite
+data within the demography data are flea observations, fleas sampled,
+ear mite observations, and ear mites sampled. For both flea observations
+and fleas sampled, the recorded value equates to the number of
+individual fleas either observed on or sampled from the individual pika.
+However, for ear mites sampled, the recorded values are binary. A ``0''
+is recorded for individual pikas that did not have ear mites sampled,
+and a ``1'' is recorded for pikas that were sampled. For ear mites
+observed, the data is represented in categories. The categories are
+``N'' for none observed, ``L'' for low density, ``M'' for medium
+density, ``H'' for high density, ``NA'' for individuals whose data was
+not recorded in the main trapping notebook, and ``NS'' for Pikas who
+were not sampled for mites in this way. There are also a few instances
+of either a ``0'' or a ``1'' being recorded and a single recording of
+``N?''.
+
+Once we had isolated the flea and ear mite data from the demography
+data, we split the dataframe into two, one with only flea data and one
+with only ear mite data. For the flea data, we grouped by PikaID to
+isolate individual pikas that were recaptured in a given year. Next, we
+split the data by year and found the mean value of fleas sampled and
+fleas observed per pika for each year. We then merged the single-year
+dataframes to create one dataframe with the average number of fleas
+observed and sampled per pika per year. We wrangled the mite sampled
+data the same way. However, since the data was binary, either ``0'' or
+``1'', the resulting ear mite sampled column represented a proportion of
+captured pikas sampled for ear mites. Generally, if ear mites were
+observed on a pika, they were sampled. This means the proportion of
+pikas sampled for ear mites represents the proportion of total pikas
+captured in a given year with ear mites present.
+
+For ear mite observed data, we used a different wrangling technique to
+account for the categorical data. The NA, NS, 0, 1, and N? observations
+were all dropped. We retained only observations where ear mite
+observation data was collected. These are N, L, M, and H. Once we had
+selected the variables we wanted, we grouped them by year and
+observation type and summed the amount of each observation variable
+recorded for a year. This gave us a total count for each observation
+variable for each year. To account for the different number of pika
+captures each year, we converted the data from a count total to the
+proportion of each categorical variable represented each year.
+
+In the final step, we joined the wrangled flea and mite dataframes into
+one final parasite dataframe. The final parasite dataframe was then
+joined to the climate data, and we had our final merged parasite and
+climate dataframe.
+
+\newpage
+
+\hypertarget{exploratory-analysis}{%
+\section{Exploratory Analysis}\label{exploratory-analysis}}
+
+\newpage
+
+\hypertarget{analysis}{%
+\section{Analysis}\label{analysis}}
+
+\hypertarget{question-1-is-temperature-changing-over-time-at-niwot-ridge}{%
+\subsection{Question 1: Is temperature changing over time at Niwot
+Ridge?}\label{question-1-is-temperature-changing-over-time-at-niwot-ridge}}
+
+\hypertarget{question-2-are-pika-populations-changing-over-time-and-is-there-a-correlation-between-population-changes-and-temperature-changes}{%
+\subsection{Question 2: Are Pika populations changing over time and is
+there a correlation between population changes and temperature
+changes?}\label{question-2-are-pika-populations-changing-over-time-and-is-there-a-correlation-between-population-changes-and-temperature-changes}}
+
+\#\#Question 3: Are Pika populations changing spatially over time? Are
+they seeking higher elevation sites?
+
+\#\#Question 4: One well documented effect of warming temperatures is an
+increase in zoonotic diseases. Is mite and flea prevalence in Pikas
+changing over time and with temperature?
+
+To analyze this question, linear regressions were ran on flea and mite
+data over both time and temperature.
+
+\newpage
+
+\hypertarget{summary-and-conclusions}{%
+\section{Summary and Conclusions}\label{summary-and-conclusions}}
+
+\newpage
+
+\hypertarget{references}{%
+\section{References}\label{references}}
+
+\textless add references here if relevant, otherwise delete this
+section\textgreater{}
+
+\end{document}
