@@ -22,6 +22,9 @@ library(trend)
 library(Kendall)
 library(tseries)
 library(leaflet)
+library(leafem)
+
+install.packages("leafem")
 
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
@@ -272,6 +275,10 @@ Mean_Pika_Location <- Pika_Spatial %>%
     Mean_Easting = mean(easting, na.rm=T),
     Mean_Northing = mean(northing, na.rm=T))
 
+All_Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
+  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
+           crs=2151)
+
 Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
   st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
            crs=2151) %>%
@@ -337,18 +344,13 @@ plot_grid(Pika_Location_2008_Plot, Pika_Location_2010_Plot, nrow = 1, align = 'h
 
 mapview(Pika_Locations_sf) 
 
-mapview(Mean_Pika_Location_sf) %>%
-  leafem::addStaticLabels(label = Mean_Pika_Location_sf$Year,
+mapview(All_Mean_Pika_Location_sf) %>%
+  addStaticLabels(label = Mean_Pika_Location_sf$Year,
                   noHide = TRUE,
                   direction = "left",
                   textOnly = TRUE,
-                  textsize = "20px") + 
-  mapview(Mean_Pika_Location_sf2) %>%
-  leafem::addStaticLabels(label = Mean_Pika_Location_sf2$Year,
-                  noHide = TRUE,
-                  direction = "right",
-                  textOnly = TRUE,
                   textsize = "20px")
+
 
 Spatial_1 
 Spatial_2
