@@ -1,16 +1,18 @@
 ---
-title: "ParasiteWrangling"
+title: "DataWrangling"
 author: "Jacob Freedman and Logan Dye"
 date: "2022-12-07"
 output: html_document
 editor_options: 
   chunk_output_type: console
 ---
+
+##Setup
   
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=45), tidy=TRUE)
 
-#Installing and loading packages
+#Loading packages
 library(tidyverse)
 library(dplyr)
 library(lubridate)
@@ -29,6 +31,8 @@ theme_set(mytheme)
 
 ```
 
+##Gathering Datasets and Wrangling Date Columns
+
 ```{r}
 #Reading in Pika Demography and Climate datasets
 Pika_Raw <- read.csv("./Data/Raw/pika_demography.cr.data.csv", stringsAsFactors = TRUE)
@@ -45,37 +49,121 @@ class(Climate_Raw$date)
 Climate_Raw$year <- as.character(Climate_Raw$year) %>%
   as.Date.character(Climate_Raw$year, format = "%Y")
 ```
+ 
+##Climate Data Wrangling
   
 ```{r}
 #Wrangling climate dataset for focal period
 Climate_08to18 <- Climate_Raw %>%
 mutate(Year = year(year), Month = month(date)) %>%
-  select(LTER_site:date, airtemp_max, airtemp_min, airtemp_avg, Year, Month) %>%
+  select(LTER_site:date, airtemp_avg, Year, Month) %>%
   filter(Year >= "2008", Year <= "2018")
 
 Climate_08to18_clean <- 
   Climate_08to18 %>% 
-  mutate(airtemp_max_interpolated = zoo::na.approx(airtemp_max), airtemp_min_interpolated = zoo::na.approx(airtemp_min), airtemp_avg_interpolated =   zoo::na.approx(airtemp_avg))
+  mutate(airtemp_avg_interpolated =   zoo::na.approx(airtemp_avg))
 
 Climate_Means_08to18 <- Climate_08to18_clean %>%
   group_by(Year) %>%
   summarise(
-    Mean_Max_Temp = mean(airtemp_max_interpolated, na.rm=T),
-    Mean_Min_Temp = mean(airtemp_min_interpolated, na.rm=T),
-    Mean_Avg_Temp = mean(airtemp_avg_interpolated, na.rm=T)
-  )
- 
-Climate_Means_08to18_NARemoved <- Climate_08to18 %>%
-  group_by(Year) %>%
-  summarise(
-    Mean_Max_Temp = mean(airtemp_max, na.rm=T),
-    Mean_Min_Temp = mean(airtemp_min, na.rm=T),
-    Mean_Avg_Temp = mean(airtemp_avg, na.rm=T)
-  )
+    Mean_Avg_Temp = mean(airtemp_avg_interpolated))
 
 Climate_Means_08to18_Refined <- Climate_Means_08to18 %>%
   filter(Year!= 2009)
 ```
+
+```{r}
+#Isolating individual Pika captures. We combined all tag components into a single identifier (PikaID) to sort out recaptures from the same year. 
+Pika_Processed <- Pika_Raw %>%
+  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
+  select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
+  group_by(Year) %>%
+  subset(tag_type =="A" | tag_type == "C3") %>%
+  subset(PikaID!= "NS  NS  NS  NS" & PikaID!= "NA  NA  NA  NA")
+
+#Created dataframes for each year of data to count unique values.
+
+Pika_2008 <- Pika_Processed %>%
+  filter(Year == 2008)
+length(unique(Pika_2008$PikaID))
+
+Pika_2010 <- Pika_Processed %>%
+  filter(Year == 2010)
+length(unique(Pika_2010$PikaID))
+
+Pika_2011 <- Pika_Processed %>%
+  filter(Year == 2011)
+length(unique(Pika_2011$PikaID))
+
+Pika_2012 <- Pika_Processed %>%
+  filter(Year == 2012)
+length(unique(Pika_2012$PikaID))
+
+Pika_2013 <- Pika_Processed %>%
+  filter(Year == 2013)
+length(unique(Pika_2013$PikaID))
+
+Pika_2014 <- Pika_Processed %>%
+  filter(Year == 2014)
+length(unique(Pika_2014$PikaID))
+
+Pika_2015 <- Pika_Processed %>%
+  filter(Year == 2015)
+length(unique(Pika_2015$PikaID))
+
+Pika_2016 <- Pika_Processed %>%
+  filter(Year == 2016)
+length(unique(Pika_2016$PikaID))
+
+Pika_2017 <- Pika_Processed %>%
+  filter(Year == 2017)
+length(unique(Pika_2017$PikaID))
+
+Pika_2018 <- Pika_Processed %>%
+  filter(Year == 2018)
+length(unique(Pika_2018$PikaID))
+
+Pika_2019 <- Pika_Processed %>%
+  filter(Year == 2019)
+length(unique(Pika_2019$PikaID))
+
+Pika_2020 <- Pika_Processed %>%
+  filter(Year == 2020)
+length(unique(Pika_2020$PikaID))
+
+#Taking value from count and putting it into a data frame. Each annual data frame has two values (year and number of captures).
+
+Pika_2008_Count <- as.data.frame(table(Pika_2008$Year))
+Pika_2010_Count <- as.data.frame(table(Pika_2010$Year))
+Pika_2011_Count <- as.data.frame(table(Pika_2011$Year))
+Pika_2012_Count <- as.data.frame(table(Pika_2012$Year))
+Pika_2013_Count <- as.data.frame(table(Pika_2013$Year))
+Pika_2014_Count <- as.data.frame(table(Pika_2014$Year))
+Pika_2015_Count <- as.data.frame(table(Pika_2015$Year))
+Pika_2016_Count <- as.data.frame(table(Pika_2016$Year))
+Pika_2017_Count <- as.data.frame(table(Pika_2017$Year))
+Pika_2018_Count <- as.data.frame(table(Pika_2018$Year))
+Pika_2019_Count <- as.data.frame(table(Pika_2019$Year))
+Pika_2020_Count <- as.data.frame(table(Pika_2020$Year))
+
+#Using rbind to compile 1 data frame of annual captures.
+
+Pika_Total_Count <- rbind(Pika_2008_Count, Pika_2010_Count, Pika_2011_Count, Pika_2012_Count, Pika_2013_Count, Pika_2014_Count, Pika_2015_Count, Pika_2016_Count, Pika_2017_Count, Pika_2018_Count, Pika_2019_Count, Pika_2020_Count)
+
+colnames(Pika_Total_Count) <- c('Year','Captures')
+
+#Filtering to get Pika dataset to match climate dataset
+  
+Pika_Count_08to18 <- rbind(Pika_2008_Count, Pika_2010_Count, Pika_2011_Count, Pika_2012_Count, Pika_2013_Count, Pika_2014_Count, Pika_2015_Count, Pika_2016_Count, Pika_2017_Count, Pika_2018_Count)
+
+colnames(Pika_Count_08to18) <- c('Year','Captures')
+
+#Merging Pika data with climate data to prepare for analysis
+
+Pika_Temperature <- merge(Pika_Count_08to18, Climate_Means_08to18_Refined, by.x = "Year", by.y = "Year")
+```
+
+##Parasite Data Wrangling
 
 ```{r}
 # Initial wrangling for flea data. In this code chuck I create two dataframes isolating flea and mite data respectively. 
@@ -616,3 +704,68 @@ No2008_Parasite_Climate_DF <- Final_Parasite_Climate_DF %>%
   filter(Year != 2008)
   
 ```
+
+##Spatial Analysis
+
+```{r}
+#Dropping observations without spatial data
+Pika_Spatial <- Pika_Raw %>%
+  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
+  select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
+  group_by(Year) %>%
+  drop_na(northing, easting)
+
+#Calculating mean annual pika capture locations
+
+Mean_Pika_Location <- Pika_Spatial %>%
+  summarise(
+    Mean_Easting = mean(easting),
+    Mean_Northing = mean(northing))
+
+Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
+  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
+           crs=2151)
+
+#Creating a spatial dataframe of Pika captures and then dividing into distinct dataframes by year
+
+Pika_Locations_sf <- Pika_Spatial %>% 
+  st_as_sf(coords = c('easting','northing'),
+           crs=2151)
+
+Pika_Location_2008_sf <- Pika_Locations_sf %>%
+  filter(Year == 2008)
+
+Pika_Location_2010_sf <- Pika_Locations_sf %>%
+  filter(Year == 2010)
+
+Pika_Location_2011_sf <- Pika_Locations_sf %>%
+  filter(Year == 2011)
+
+Pika_Location_2012_sf <- Pika_Locations_sf %>%
+  filter(Year == 2012)
+
+Pika_Location_2013_sf <- Pika_Locations_sf %>%
+  filter(Year == 2013)
+
+Pika_Location_2014_sf <- Pika_Locations_sf %>%
+  filter(Year == 2014)
+
+Pika_Location_2015_sf <- Pika_Locations_sf %>%
+  filter(Year == 2015)
+
+Pika_Location_2016_sf <- Pika_Locations_sf %>%
+  filter(Year == 2016)
+
+Pika_Location_2017_sf <- Pika_Locations_sf %>%
+  filter(Year == 2017)
+
+Pika_Location_2018_sf <- Pika_Locations_sf %>%
+  filter(Year == 2018)
+
+Pika_Location_2019_sf <- Pika_Locations_sf %>%
+  filter(Year == 2019)
+
+Pika_Location_2020_sf <- Pika_Locations_sf %>%
+  filter(Year == 2020)
+```
+

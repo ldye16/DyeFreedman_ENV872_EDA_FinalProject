@@ -86,7 +86,7 @@ Pika_Processed <- Pika_Raw %>%
   subset(tag_type =="A" | tag_type == "C3") %>%
   subset(PikaID!= "NS  NS  NS  NS" & PikaID!= "NA  NA  NA  NA")
 
-#Had to make dataframes for each year of data to count unique values.
+#Created dataframes for each year of data to count unique values.
 
 Pika_2008 <- Pika_Processed %>%
   filter(Year == 2008)
@@ -136,7 +136,7 @@ Pika_2020 <- Pika_Processed %>%
   filter(Year == 2020)
 length(unique(Pika_2020$PikaID))
 
-#Taking value from count and putting it into a data frame. Each annual data frame just has two values (year and number of captures).
+#Taking value from count and putting it into a data frame. Each annual data frame has two values (year and number of captures).
 
 Pika_2008_Count <- as.data.frame(table(Pika_2008$Year))
 Pika_2010_Count <- as.data.frame(table(Pika_2010$Year))
@@ -151,7 +151,7 @@ Pika_2018_Count <- as.data.frame(table(Pika_2018$Year))
 Pika_2019_Count <- as.data.frame(table(Pika_2019$Year))
 Pika_2020_Count <- as.data.frame(table(Pika_2020$Year))
 
-#Using rbind to compile 1 data frame of captures each year.
+#Using rbind to compile 1 data frame of annual captures.
 
 Pika_Total_Count <- rbind(Pika_2008_Count, Pika_2010_Count, Pika_2011_Count, Pika_2012_Count, Pika_2013_Count, Pika_2014_Count, Pika_2015_Count, Pika_2016_Count, Pika_2017_Count, Pika_2018_Count, Pika_2019_Count, Pika_2020_Count)
 
@@ -257,12 +257,14 @@ plot_grid(AvgTemp_Plot, MinTemp_Plot, MaxTemp_Plot, nrow = 3, align = 'w')
 ```
 
 ```{r}
-#Spatial Analysis
+#Dropping observations without spatial data
 Pika_Spatial <- Pika_Raw %>%
   mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
   select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
   group_by(Year) %>%
   drop_na(northing, easting)
+
+#Calculating mean annual pika capture locations
 
 Mean_Pika_Location <- Pika_Spatial %>%
   summarise(
@@ -272,6 +274,8 @@ Mean_Pika_Location <- Pika_Spatial %>%
 Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
   st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
            crs=2151)
+
+#Creating a spatial dataframe of Pika captures and then dividing into distinct dataframes by year
 
 Pika_Locations_sf <- Pika_Spatial %>% 
   st_as_sf(coords = c('easting','northing'),

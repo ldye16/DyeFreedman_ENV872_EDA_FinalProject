@@ -77,7 +77,11 @@ Pika population changes over time and in relation to temperature:
 
 Pika data was available from 2008 to 2020, but we selected for years in which there was an overlap of available Pika data with the temperature data (2008 to 2018). The dataset contained the site, data, slope aspect, location of capture, identification information, demography data, biological samples collected and pest presence. In order to estimate population over time, we identified annual Pika captures at Niwot Ridge. This required eliminating any possibility of recounts within the same year. We first filtered out any captures that did not have a "tag type", meaning that they were not tagged at all and not enough information is provided to rule it out as a recapture. Second, we filtered out observations where the tag type was recorded, but for an unknown reason none of the tag information (ear tag color or number code) was recorded. Finally, we split the dataset into separate datasets for each year and found the number of unique tag IDs to derive annual counts. 
 
-To prepare for our temperature and pika abundance regressions, we needed to calculate mean annual temperature values. We 
+To prepare for our temperature and pika abundance regressions, we needed to calculate mean annual temperature values. We took the interpolated temperature dataset and grouped by year, then summarized by average daily temperature to calculate annual means. 
+
+Pika spatial distribution changes:
+
+To assess spatial changes, observations without spatial attributes (easting, northing) were eliminated. Mean annual pika locations were determined by summarizing the easting and northing columns. Both individual and mean annual locations were converted to spatial data frames using the NAD83 Zone 13N projected coordinate system. 
 
 
 
