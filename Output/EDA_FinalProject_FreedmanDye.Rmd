@@ -56,7 +56,7 @@ Climate_Raw <- read.csv("./Data/Raw/d-1cr23x-cr1000.daily.ml.data.csv", stringsA
 
 
 # Rationale and Research Questions
-The American Pika is a threatened small mammal endemic to alpine tundra habitat in the Rocky Mountains and Sierra Nevadas. Climate change is a growing threat worldwide, and is expected to have a particular impact on high elevation habitats. Pikas are sensitive to both temperature and changes in the water balance (impacted by seasonality of snowmelt), so climate change could undoubtedly threaten their long-term viability. In addition, as Pikas occupy habitat at the tops of mountain ridges, their possible migration either northward or to higher ridges would involve them crossing over lower elevation valleys. Their ability to do so is unknown, which makes their possibility of survival even murkier. 
+The American Pika is a threatened small mammal endemic to alpine tundra habitat in the Rocky Mountains and Sierra Nevadas. Climate change is a growing threat worldwide, and is expected to have a particular impact on high elevation habitats. Pikas are sensitive to both temperature and changes in the water balance (impacted by seasonality of snowmelt), so climate change could undoubtedly threaten their long-term viability. In addition, as Pikas occupy habitat at the tops of mountain ridges, their possible migration either northward or to higher ridges would involve them crossing over lower elevation valleys. Their ability to do so is unknown, which makes their possibility of survival even murkier (National Wildlife Federation). 
 
 Niwot Ridge is one of the most heavily studied alpine areas in the Rocky Mountains. It is home to multiple research projects, as it is both a NEON and LTER Site. LTER researchers have gathered data on Pika demography and climate over the past 15-20 years. We used public datasets to answer multiple questions regarding trends in climate and Pika populations at Niwot Ridge.
 
@@ -118,9 +118,11 @@ A time series of daily average temperature was conducted from 2008 to 2018 to as
 
 ## Question 2: Are Pika populations changing over time and is there a correlation between population changes and temperature changes?
 
-Linear regressions were conducted to analyze pika populations over time and in relation to changing temperature. 
+Linear regressions were conducted to analyze pika populations over time and in relation to changing temperature. Annual pika populations did not change significantly from 2008 to 2020 (Linear Model, F = 2.98, df = 10, Adjusted R-squared = 0.1525, p-value = 0.115). However, the general population trend appears to be decreasing (Figure X) and it was found that populations did decrease significantly in response to higher temperatures (Linear Model, F = 6.396, df = 8, Adjusted R-squared = 0.3748, p-value = 0.0353, Figure X). 
 
 ##Question 3: Are Pika populations changing spatially over time? Are they seeking higher elevation sites?
+
+Spatial changes in pika population were estimated by calculating and plotting the mean annual capture location. Figure X shows the mean capture locations from 2008 to 2020, and Figure X shows all captures to help better visualize the study area. There are three sampling sites (Mitchell Lake to the North - 11,044 feet, Long Lake in the center - 10,675 feet, West Knoll to the South - 11,653 feet). There does not appear to be a clear pattern in distribution changes, as the mean capture location changes seemingly randomly in a northward or southward from year to year. In particular, the mean annual capture locations for 2008 and 2020 (the entire timeframe of the data) are nearly identical. Therefore, it appears that pika are not favoring higher elevation ridges in response to climate change. 
 
 ##Question 4:  One well documented effect of warming temperatures is an increase in zoonotic diseases. Is mite and flea prevalence in Pikas changing over time and with temperature?
 
@@ -130,8 +132,14 @@ To analyze this question, linear regressions were ran on flea and mite data over
 
 # Summary and Conclusions
 
+First and foremost, climate change is occurring at Niwot Ridge as temperature has increased rapidly over the past 15 years. This was expected not only because of climate change's impact on alpine regions, but because the LTER climate dataset was very comprehensive. It was valuable to have access to daily temperature values to run a time series analysis that was built on thousands of data observations. 
+
+As detailed in our wrangling section, the Pika dataset was less complete and contained far many fewer observations. It is possible that with more observations and more complete tag information (many entries had to be eliminated to avoid double-counting recaptures), a significant trend in pika population over time would have been observed. It is understandable that pika populations increased with temperature, but not time, as mean annual temperature did not increase every year.
+
+Further analysis is required to investigate the spatial changes in pika distribution over time. Although sampling effort was roughly even between years, it is likely that spatial patterns would be more clear if a strict pika sampling protocol was followed. For example, greater sampling effort at one location would skew the location of the mean annual observation, and make patterns difficult to identify. Although it was beyond the scope of this project, it would be valuable to analyze population changes at each site, and determine if the highest altitude site (West Knoll) provided better habitat for pikas than the other two sites. 
 
 \newpage
 
 # References
-<add references here if relevant, otherwise delete this section> 
+
+American Pika. National Wildlife Federation. (n.d.). Retrieved December 8, 2022, from https://www.nwf.org/Educational-Resources/Wildlife-Guide/Mammals/American-Pika#:~:text=American%20pikas%20are%20small%2C%20rodent,to%20camouflage%20them%20among%20rocks. 
