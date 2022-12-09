@@ -52,6 +52,22 @@ theme_set(mytheme)
 # Load your datasets
 Pika_Raw <- read.csv("./Data/Raw/pika_demography.cr.data.csv", stringsAsFactors = TRUE)
 Climate_Raw <- read.csv("./Data/Raw/d-1cr23x-cr1000.daily.ml.data.csv", stringsAsFactors = TRUE)
+
+Climate_08to18_clean <- read.csv("./Data/Processed/Climate_08to18_clean.csv", stringsAsFactors = TRUE)
+
+Climate_Means_08to18 <- read.csv("./Data/Processed/Climate_Means_08to18.csv", stringsAsFactors = TRUE)
+
+Pika_Total_Count <- read.csv("./Data/Processed/Pika_Total_Count.csv", stringsAsFactors = TRUE)
+
+Pika_Temperature <- read.csv("./Data/Processed/Pika_Temperature.csv", stringsAsFactors = TRUE)
+
+Yearly_Flea_Obs_10to20 <- read.csv("./Data/Processed/Yearly_Flea_Obs_10to20.csv", stringsAsFactors = TRUE)
+
+Final_Parasite_DF <- read.csv("./Data/Processed/Final_Parasite_DF.csv", stringsAsFactors = TRUE)
+
+No2008_Parasite_Climate_DF <- read.csv("./Data/Processed/No2008_Parasite_Climate_DF.csv", stringsAsFactors = TRUE)
+
+Final_Parasite_Climate_DF <- read.csv("./Data/Processed/Final_Parasite_Climate_DF.csv", stringsAsFactors = TRUE)
 ```
 
 
@@ -110,23 +126,155 @@ In the final step, the flea and mite dataframes were joined into one final paras
 
 # Analysis
 
-
-
 ## Question 1: Is temperature changing over time at Niwot Ridge?
 
-A time series of daily average temperature was conducted from 2008 to 2018 to assess temperature changes over time. Temperature changed significantly at Niwot Ridge (Seasonal Mann-Kendall, p-value = 6.133e-11). This is clear when examining the decomposed temperature data (Figure X), which despite the expected seasonality displays a trend of increasing temperature. A plot of mean annual temperature also visually reinforces these results (Figure X).
+A time series of daily average temperature was conducted from 2008 to 2018 to assess temperature changes over time. Temperature changed significantly at Niwot Ridge (Seasonal Mann-Kendall, p-value = 6.133e-11). This is clear when examining the decomposed temperature data (Figure 1), which despite the expected seasonality displays a trend of increasing temperature. A plot of mean annual temperature also visually reinforces these results (Figure 2).
+
+```{r}
+Climate_Daily_Means_ts <- ts(Climate_08to18_clean$airtemp_avg_interpolated, start = c(2008,1), end = c(2018,365), frequency = 365)
+
+Climate_daily_trend_decomp <- stl(Climate_Daily_Means_ts,s.window = "periodic")
+plot(Climate_daily_trend_decomp)
+```
+
+```{r}
+AvgTemp_Plot <- ggplot(Climate_Means_08to18, aes(x=Year, y=Mean_Avg_Temp)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
+  ylab("Mean Average Temperature (F)") +
+  ggtitle("Temperature Changes Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(AvgTemp_Plot)
+```
 
 ## Question 2: Are Pika populations changing over time and is there a correlation between population changes and temperature changes?
 
-Linear regressions were conducted to analyze pika populations over time and in relation to changing temperature. Annual pika populations did not change significantly from 2008 to 2020 (Linear Model, F = 2.98, df = 10, Adjusted R-squared = 0.1525, p-value = 0.115). However, the general population trend appears to be decreasing (Figure X) and it was found that populations did decrease significantly in response to higher temperatures (Linear Model, F = 6.396, df = 8, Adjusted R-squared = 0.3748, p-value = 0.0353, Figure X). 
+Linear regressions were conducted to analyze pika populations over time and in relation to changing temperature. Annual pika populations did not change significantly from 2008 to 2020 (Linear Model, F = 2.98, df = 10, Adjusted R-squared = 0.1525, p-value = 0.115). However, the general population trend appears to be decreasing (Figure 3) and it was found that populations did decrease significantly in response to higher temperatures (Linear Model, F = 6.396, df = 8, Adjusted R-squared = 0.3748, p-value = 0.0353, Figure 4). 
+
+```{r}
+Pika_Total_Count_Plot <- ggplot(Pika_Total_Count, aes(x=Year, y=Captures, group=1)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  ylab("Pika Captures") +
+  ylim(0,50) +
+  ggtitle("Pika Captures Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(Pika_Total_Count_Plot)
+```
+
+```{r}
+Pika_AvgTemp_Plot <- ggplot(Pika_Temperature, aes(x=Mean_Avg_Temp, y=Captures)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  ylab("Pika Captures") +
+  ylim(0,50) +
+  ggtitle("Pika Captures vs. Mean Annual Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(Pika_AvgTemp_Plot)
+```
 
 ##Question 3: Are Pika populations changing spatially over time? Are they seeking higher elevation sites?
 
-Spatial changes in pika population were estimated by calculating and plotting the mean annual capture location. Figure X shows the mean capture locations from 2008 to 2020, and Figure X shows all captures to help better visualize the study area. There are three sampling sites (Mitchell Lake to the North - 11,044 feet, Long Lake in the center - 10,675 feet, West Knoll to the South - 11,653 feet). There does not appear to be a clear pattern in distribution changes, as the mean capture location changes seemingly randomly in a northward or southward from year to year. In particular, the mean annual capture locations for 2008 and 2020 (the entire timeframe of the data) are nearly identical. Therefore, it appears that pika are not favoring higher elevation ridges in response to climate change. 
+Spatial changes in pika population were estimated by calculating and plotting the mean annual capture location. Figure 5 shows the mean capture locations from 2008 to 2020, and Figure 6 shows all captures to help better visualize the study area. There are three sampling sites (Mitchell Lake to the North - 11,044 feet, Long Lake in the center - 10,675 feet, West Knoll to the South - 11,653 feet). There does not appear to be a clear pattern in distribution changes, as the mean capture location changes seemingly randomly in a northward or southward from year to year. In particular, the mean annual capture locations for 2008 and 2020 (the entire timeframe of the data) are nearly identical. Therefore, it appears that pika are not favoring higher elevation ridges in response to climate change. 
+
+```{r}
+All_Pika_Locations_Plot
+```
+
+```{r}
+Mean_Pika_Locations_Plot
+```
 
 ##Question 4:  One well documented effect of warming temperatures is an increase in zoonotic diseases. Is mite and flea prevalence in Pikas changing over time and with temperature?
 
-To analyze this question, linear regressions were ran on flea and mite data over both time and temperature. 
+Linear regressions were run on yearly flea observed, flea sampled, and ear mite sampled data over time and temperature. The regressions found no significance for flea observed data over time (linear model, F = 0.6691, df = 9, Adjusted R-Square = -0.03422, p-value = 0.4345) and temperature (linear model, F = 0.9955, df = 7, Adjusted R-Square = -0.0005629, p-value = 0.3516)(figure x).
+```{r}
+
+Flea_Obs_Plot <- ggplot(Yearly_Flea_Obs_10to20, aes(x= Year, y=Avg_Flea_Obs)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  scale_x_continuous(breaks = seq(2010, 2020, by = 1)) +
+  ylab("Average Fleas Observed") +
+  ggtitle("Fleas Observed Per Pika Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+Flea_Obs_AvgTemp_Plot <- ggplot(No2008_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Avg_Flea_Obs)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  ylab("Average Fleas Observed") +
+  xlab("Average Yearly Temperatrue (F)") +
+  ggtitle("Average Fleas Observed by Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+FleaObs_Plot <- plot_grid(Flea_Obs_Plot, Flea_Obs_AvgTemp_Plot, nrow = 2, align = "w")
+print(FleaObs_Plot)
+```
+
+Likewise, when regressions were run on the number of fleas sampled per pika over time (linear model, F = 1.112, df = 10, Adjusted R-Square = 0.01005, p-value = 0.3165) and temperature (linear model, F = 0.3773, df = 8, Adjusted R-Square = -0.07434, p-value = 0.5561), no significant trends were found (figure x). 
+```{r}
+Flea_Samp_Plot <- ggplot(Final_Parasite_DF, aes(x= Year, y=Avg_Fleas_Samp)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
+  ylab("Average Fleas Sampled") +
+  ggtitle("Fleas Sampled Per Pika Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+Flea_Samp_AvgTemp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Avg_Fleas_Samp)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  ylab("Average Fleas Sampled") +
+  xlab("Average Yearly Temperatrue (F)") +
+  ggtitle("Average Fleas Sampled by Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+FleaSamp_Plot <- plot_grid(Flea_Samp_Plot, Flea_Samp_AvgTemp_Plot, nrow = 2, align = "w")
+print(FleaSamp_Plot)
+```
+
+Finally,  the proportion of captured pikas with ear mites present over both time (linear model, F = 0.08857, df = 10, Adjusted R-Square = -0.09034, p-value = 0.7721) and temperature (linear model, F = 0.1842, df = 8, Adjusted R-Square = 0.08226, p-value = 0.2158) did not change (figure x).
+```{r}
+Mite_Samp_Plot <- ggplot(Final_Parasite_DF, aes(x= Year, y=Proportion_ear.mite_Samp)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
+  ylab("Proportion of Pika with Mites") +
+  ggtitle("Proportion of Pika's With Mites Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+Mite_Samp_AvgTemp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Proportion_ear.mite_Samp)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  ylab("Proportion of Pika with Mites") +
+  xlab("Average Yearly Temperatrue (F)") +
+  ggtitle("Proportion of Pika's With Mites By Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
+print(Mite_Samp_AvgTemp_Plot)
+
+MiteSamp_Plot <- plot_grid(Mite_Samp_Plot, Mite_Samp_AvgTemp_Plot, nrow = 2, align = "w")
+print(MiteSamp_Plot)
+```
+
+While no clear patterns were found for any of our tested variables, some plots reveal the expected general trends. Fleas sampled, fleas observed, and mites sampled visually increased over time (Figure X,Y,Z). However, when compared to temperature data, only the proportion of mites present on captured pikas increased with increasing temperature. The flea data trend lines decreased with increasing temperature. As shown in figure x, the ear mite observed categories had no perceivable pattern that would indicate a correlation over time. 
+```{r}
+
+Mite_PropObs_Time_Plot <- ggplot(Final_Parasite_DF, aes(x = Year)) + 
+  geom_line(aes(y= PropL, color = "PropL")) + 
+  geom_line(aes(y= PropM, color = "PropM")) +
+  geom_line(aes(y= PropH, color = "PropH")) +
+  geom_line(aes(y= PropN, color = "PropN")) + 
+  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
+  theme(legend.position = "bottom", 
+        plot.title = element_text(hjust = 0.5)) +
+  ylab("Total Counts") +
+  ggtitle("Cumulative Observation Counts By Year")
+
+print(Mite_PropObs_Time_Plot)
+```
+
+
+
 
 \newpage
 
@@ -137,6 +285,8 @@ First and foremost, climate change is occurring at Niwot Ridge as temperature ha
 As detailed in our wrangling section, the Pika dataset was less complete and contained far many fewer observations. It is possible that with more observations and more complete tag information (many entries had to be eliminated to avoid double-counting recaptures), a significant trend in pika population over time would have been observed. It is understandable that pika populations increased with temperature, but not time, as mean annual temperature did not increase every year.
 
 Further analysis is required to investigate the spatial changes in pika distribution over time. Although sampling effort was roughly even between years, it is likely that spatial patterns would be more clear if a strict pika sampling protocol was followed. For example, greater sampling effort at one location would skew the location of the mean annual observation, and make patterns difficult to identify. Although it was beyond the scope of this project, it would be valuable to analyze population changes at each site, and determine if the highest altitude site (West Knoll) provided better habitat for pikas than the other two sites. 
+
+No parasitic data had a significant correlation when regressions were run over time and temperature. This analysis indicates that, while it is estimated that increased temperatures over time will lead to an increase of parasites, this trend has not actualized over the last ten years within the pika population sampled at NIWOT Ridge. 
 
 \newpage
 

@@ -728,8 +728,8 @@ Final_Parasite_DF$Proportion_ear.mite_Samp <-
 
 #Create a final parasite dataframe and combine it with the Climate Data. 
 
-Final_Parasite_Climate_DF <- Climate_and_Flea_Data %>%
-  left_join(All_Mite_Data_08to18, by = "Year")
+Final_Parasite_Climate_DF <- Climate_Means_08to18_Refined %>%
+  left_join(Final_Parasite_DF, by = "Year")
 
 #convert character columns to numeric so that we can run analysis and plot the data
 

@@ -24,7 +24,7 @@ library(tseries)
 library(leaflet)
 library(leafem)
 
-install.packages("leafem")
+#install.packages("leafem")
 
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
@@ -213,7 +213,11 @@ plot(Climate_daily_trend_decomp)
 
 Pika_AvgTemp_Plot <- ggplot(Pika_Temperature, aes(x=Mean_Avg_Temp, y=Captures)) +
   geom_point() +
-  geom_smooth(method=lm)
+  geom_smooth(method=lm) +
+  ylab("Pika Captures") +
+  ylim(0,50) +
+  ggtitle("Pika Captures vs. Mean Annual Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))
 print(Pika_AvgTemp_Plot)
 
 Pika_MinTemp_Plot <- ggplot(Pika_Temperature, aes(x=Mean_Min_Temp, y=Captures)) +
@@ -231,18 +235,23 @@ plot_grid(Pika_AvgTemp_Plot, Pika_MinTemp_Plot, Pika_MaxTemp_Plot, nrow = 3, ali
 #Plotting Pika captures per year with lm
 
 Pika_Total_Count_Plot <- ggplot(Pika_Total_Count, aes(x=Year, y=Captures, group=1)) +
-  geom_line() +
+  geom_point() +
   geom_smooth(method=lm) +
+  ylab("Pika Captures") +
   ylim(0,50) +
-  mytheme
+  ggtitle("Pika Captures Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
   print(Pika_Total_Count_Plot)
   
 #Temperature over time
   
 AvgTemp_Plot <- ggplot(Climate_Means_08to18, aes(x=Year, y=Mean_Avg_Temp)) +
-  geom_line() +
+  geom_point() +
   geom_smooth(method=lm) +
-  mytheme
+  scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
+  ylab("Mean Average Temperature (F)") +
+  ggtitle("Temperature Changes Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
   print(AvgTemp_Plot)
   
 MinTemp_Plot <- ggplot(Climate_Means_08to18, aes(x=Year, y=Mean_Min_Temp)) +
@@ -272,23 +281,12 @@ Pika_Spatial <- Pika_Raw %>%
 
 Mean_Pika_Location <- Pika_Spatial %>%
   summarise(
-    Mean_Easting = mean(easting, na.rm=T),
-    Mean_Northing = mean(northing, na.rm=T))
+    Mean_Easting = mean(easting),
+    Mean_Northing = mean(northing))
 
 All_Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
   st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
            crs=2151)
-
-Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
-  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
-           crs=2151) %>%
-  filter(Year!= 2018, Year!= 2008)
-
-Mean_Pika_Location_sf2 <- Mean_Pika_Location %>% 
-  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
-           crs=2151) %>%
-  filter(Year == 2018 | 
-         Year == 2008)
 
 #Creating a spatial dataframe of Pika captures and then dividing into distinct dataframes by year
 
@@ -296,64 +294,14 @@ Pika_Locations_sf <- Pika_Spatial %>%
   st_as_sf(coords = c('easting','northing'),
            crs=2151) 
 
-Pika_Location_2008_sf <- Pika_Locations_sf %>%
-  filter(Year == 2008)
+All_Pika_Locations_Plot <- mapview(Pika_Locations_sf) 
 
-Pika_Location_2010_sf <- Pika_Locations_sf %>%
-  filter(Year == 2010)
-
-Pika_Location_2011_sf <- Pika_Locations_sf %>%
-  filter(Year == 2011)
-
-Pika_Location_2012_sf <- Pika_Locations_sf %>%
-  filter(Year == 2012)
-
-Pika_Location_2013_sf <- Pika_Locations_sf %>%
-  filter(Year == 2013)
-
-Pika_Location_2014_sf <- Pika_Locations_sf %>%
-  filter(Year == 2014)
-
-Pika_Location_2015_sf <- Pika_Locations_sf %>%
-  filter(Year == 2015)
-
-Pika_Location_2016_sf <- Pika_Locations_sf %>%
-  filter(Year == 2016)
-
-Pika_Location_2017_sf <- Pika_Locations_sf %>%
-  filter(Year == 2017)
-
-Pika_Location_2018_sf <- Pika_Locations_sf %>%
-  filter(Year == 2018)
-
-Pika_Location_2019_sf <- Pika_Locations_sf %>%
-  filter(Year == 2019)
-
-Pika_Location_2020_sf <- Pika_Locations_sf %>%
-  filter(Year == 2020)
-
-Pika_Location_2008_Plot <- ggplot() +
-  geom_sf(data=Pika_Location_2008_sf,color='blue',shape='0',size=2)
-Pika_Location_2008_Plot
-
-Pika_Location_2010_Plot <- ggplot() +
-  geom_sf(data=Pika_Location_2010_sf,color='blue',shape='0',size=2)
-Pika_Location_2010_Plot
-
-plot_grid(Pika_Location_2008_Plot, Pika_Location_2010_Plot, nrow = 1, align = 'h')
-
-mapview(Pika_Locations_sf) 
-
-mapview(All_Mean_Pika_Location_sf) %>%
-  addStaticLabels(label = Mean_Pika_Location_sf$Year,
+Mean_Pika_Locations_Plot <- mapview(All_Mean_Pika_Location_sf) %>%
+  addStaticLabels(label = All_Mean_Pika_Location_sf$Year,
                   noHide = TRUE,
                   direction = "left",
                   textOnly = TRUE,
                   textsize = "20px")
-
-
-Spatial_1 
-Spatial_2
 
   
 ```
@@ -889,7 +837,7 @@ Final_Parasite_DF$Proportion_ear.mite_Samp <-
 
 #Create a final parasite data frame and combine it with the Climate Data. 
 
-Final_Parasite_Climate_DF <- Climate_and_Flea_Data %>%
+Final_Parasite_Climate_DF <- Climate_Means_08to18_Refined %>%
   left_join(Final_Parasite_DF, by = "Year")
 
 Final_Parasite_Climate_DF$Avg_Fleas_Samp <- 
@@ -1021,5 +969,36 @@ Mite_PropObs_Temp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x = Mean_Avg_Tem
   ylab("Total Counts") +
   ggtitle("Cumulative Observation Counts By Average Yearly Temp (F)")
 print(Mite_PropObs_Temp_Plot)
+
+#flea observation cowplot
+
+FleaObs_Plot <- plot_grid(Flea_Obs_Plot, Flea_Obs_AvgTemp_Plot, nrow = 2, align = "w")
+
+#flea sampled cowplot
+
+FleaSamp_Plot <- plot_grid(Flea_Samp_Plot, Flea_Samp_AvgTemp_Plot, nrow = 2, align = "w")
+
+#mite sampled cowplot
+
+MiteSamp_Plot <- plot_grid(Mite_Samp_Plot, Mite_Samp_AvgTemp_Plot, nrow = 2, align = "w")
+
+```
+
+```{r}
+#exporting processes data
+
+write.csv(Climate_08to18_clean, row.names = FALSE, 
+          file = "./Data/Processed/Climate_08to18_clean.csv")
+
+write.csv(Climate_Means_08to18, row.names = FALSE, 
+          file = "./Data/Processed/Climate_Means_08to18.csv")
+
+write.csv(Pika_Total_Count, row.names = FALSE, 
+          file = "./Data/Processed/Pika_Total_Count.csv")
+
+write.csv(Final_Parasite_Climate_DF, row.names = FALSE, 
+          file = "./Data/Processed/Final_Parasite_Climate_DF.csv")
+
+
 ```
 
