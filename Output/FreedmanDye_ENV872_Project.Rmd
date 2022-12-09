@@ -1,28 +1,29 @@
 ---
-output: 
+title: "Pika Distribution and Population Trends at Niwot Ridge"
+author: "Jacob Freedman and Logan Dye"
+output:
+  html_document:
+    df_print: paged
   pdf_document:
     keep_tex: yes
     fig_caption: yes
     number_sections: yes
+subtitle: https://github.com/ldye16/DyeFreedman_ENV872_EDA_FinalProject
 geometry: margin=2.54cm
-title: "Pika Distribution and Trends at Niwot Ridge"
-subtitle: "https://github.com/ldye16/DyeFreedman_ENV872_EDA_FinalProject"
-author: "Jacob Freedman and Logan Dye"
 fontsize: 12pt
 mainfont: Times New Roman
-
+editor_options: 
+  chunk_output_type: console
 ---
 
 \newpage
 \tableofcontents 
 \newpage
-\listoftables 
-\newpage
 \listoffigures 
 \newpage
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(tidy.opts=list(width.cutoff=45), tidy=TRUE)
+knitr::opts_chunk$set(echo=FALSE, warning = FALSE, message = FALSE, tidy=TRUE)
 
 # Set your working directory
 setwd("~/DyeFreedman_ENV872_EDA_FinalProject")
@@ -39,6 +40,8 @@ library(maps)
 library(trend)
 library(Kendall)
 library(tseries)
+library(leaflet)
+library(leafem)
 
 # Set your ggplot theme
 mytheme <- theme_classic(base_size = 14) +
@@ -121,6 +124,119 @@ In the final step, the flea and mite dataframes were joined into one final paras
 
 # Exploratory Analysis 
 
+To initially explore the data, two simple plots were created with linear trendlines. Mean average temperature from 2000-2018 (Figure 1) and pika captures per year from 2008-2020 (Figure 2) demonstrate some promising patterns. Temperature appears to be increasing over time while pika population appears to be in decline. 
+
+```{r, fig.cap = "Scatterplot of mean annual temperature at Niwot Ridge from 2000 to 2018."}
+class(Pika_Raw$date)
+Pika_Raw$date <- as.Date(Pika_Raw$date, format = "%Y-%m-%d")
+class(Pika_Raw$date)
+
+
+class(Climate_Raw$date)
+Climate_Raw$date <- as.Date(Climate_Raw$date, format = "%Y-%m-%d")
+class(Climate_Raw$date)
+Climate_Raw$year <- as.character(Climate_Raw$year) %>%
+  as.Date.character(Climate_Raw$year, format = "%Y")
+
+Climate_Means_All <- Climate_Raw %>%
+  mutate(Year = year(year)) %>%
+  group_by(Year) %>%
+  filter(Year >= "2000", Year <= "2018") %>%
+  summarise(
+    Mean_Avg_Temp = mean(airtemp_avg, na.rm=T)
+  )
+  
+AvgTemp_Plot_Exploratory <- ggplot(Climate_Means_All, aes(x=Year, y=Mean_Avg_Temp)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  ylab("Mean Annual Temperature (F)") +
+  ggtitle("Temperature at Niwot Ridge Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+  print(AvgTemp_Plot_Exploratory)
+  
+Pika_Raw <- Pika_Raw %>%
+  mutate(Year = year(date))
+  
+Pika_2008_Exploratory <- Pika_Raw %>%
+  filter(Year == 2008)
+length(unique(Pika_2008_Exploratory$num_r_ear))
+
+Pika_2010_Exploratory <- Pika_Raw %>%
+  filter(Year == 2010)
+length(unique(Pika_2010_Exploratory$num_r_ear))
+
+Pika_2011_Exploratory <- Pika_Raw %>%
+  filter(Year == 2011)
+length(unique(Pika_2011_Exploratory$num_r_ear))
+
+Pika_2012_Exploratory <- Pika_Raw %>%
+  filter(Year == 2012)
+length(unique(Pika_2012_Exploratory$num_r_ear))
+
+Pika_2013_Exploratory <- Pika_Raw %>%
+  filter(Year == 2013)
+length(unique(Pika_2013_Exploratory$num_r_ear))
+
+Pika_2014_Exploratory <- Pika_Raw %>%
+  filter(Year == 2014)
+length(unique(Pika_2014_Exploratory$num_r_ear))
+
+Pika_2015_Exploratory <- Pika_Raw %>%
+  filter(Year == 2015)
+length(unique(Pika_2015_Exploratory$num_r_ear))
+
+Pika_2016_Exploratory <- Pika_Raw %>%
+  filter(Year == 2016)
+length(unique(Pika_2016_Exploratory$num_r_ear))
+
+Pika_2017_Exploratory <- Pika_Raw %>%
+  filter(Year == 2017)
+length(unique(Pika_2017_Exploratory$num_r_ear))
+
+Pika_2018_Exploratory <- Pika_Raw %>%
+  filter(Year == 2018)
+length(unique(Pika_2018_Exploratory$num_r_ear))
+
+Pika_2019_Exploratory <- Pika_Raw %>%
+  filter(Year == 2019)
+length(unique(Pika_2019_Exploratory$num_r_ear))
+
+Pika_2020_Exploratory <- Pika_Raw %>%
+  filter(Year == 2020)
+length(unique(Pika_2020_Exploratory$num_r_ear))
+
+#Taking value from count and putting it into a data frame. Each annual data frame has two values (year and number of captures).
+
+Pika_2008_Count_Exploratory <- as.data.frame(table(Pika_2008_Exploratory$Year))
+Pika_2010_Count_Exploratory <- as.data.frame(table(Pika_2010_Exploratory$Year))
+Pika_2011_Count_Exploratory <- as.data.frame(table(Pika_2011_Exploratory$Year))
+Pika_2012_Count_Exploratory <- as.data.frame(table(Pika_2012_Exploratory$Year))
+Pika_2013_Count_Exploratory <- as.data.frame(table(Pika_2013_Exploratory$Year))
+Pika_2014_Count_Exploratory <- as.data.frame(table(Pika_2014_Exploratory$Year))
+Pika_2015_Count_Exploratory <- as.data.frame(table(Pika_2015_Exploratory$Year))
+Pika_2016_Count_Exploratory <- as.data.frame(table(Pika_2016_Exploratory$Year))
+Pika_2017_Count_Exploratory <- as.data.frame(table(Pika_2017_Exploratory$Year))
+Pika_2018_Count_Exploratory <- as.data.frame(table(Pika_2018_Exploratory$Year))
+Pika_2019_Count_Exploratory <- as.data.frame(table(Pika_2019_Exploratory$Year))
+Pika_2020_Count_Exploratory <- as.data.frame(table(Pika_2020_Exploratory$Year))
+
+#Using rbind to compile 1 data frame of annual captures.
+
+Pika_Total_Count_Exploratory <- rbind(Pika_2008_Count_Exploratory, Pika_2010_Count_Exploratory, Pika_2011_Count_Exploratory, Pika_2012_Count_Exploratory, Pika_2013_Count_Exploratory, Pika_2014_Count_Exploratory, Pika_2015_Count_Exploratory, Pika_2016_Count_Exploratory, Pika_2017_Count_Exploratory, Pika_2018_Count_Exploratory, Pika_2019_Count_Exploratory, Pika_2020_Count_Exploratory)
+
+colnames(Pika_Total_Count_Exploratory) <- c('Year','Captures')
+```
+
+```{r, fig.cap = "Scatterplot of total annual pika captures at Niwot Ridge from 2008 to 2020."}
+Pika_Total_Count_Exploratory_Plot <- ggplot(Pika_Total_Count_Exploratory, aes(x=Year, y=Captures, group=1)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  ylab("Pika Captures") +
+  ylim(0,50) +
+  ggtitle("Pika Captures Over Time") +
+  theme(plot.title = element_text(hjust = 0.5))
+  print(Pika_Total_Count_Exploratory_Plot)
+```
 
 \newpage
 
@@ -128,16 +244,16 @@ In the final step, the flea and mite dataframes were joined into one final paras
 
 ## Question 1: Is temperature changing over time at Niwot Ridge?
 
-A time series of daily average temperature was conducted from 2008 to 2018 to assess temperature changes over time. Temperature changed significantly at Niwot Ridge (Seasonal Mann-Kendall, p-value = 6.133e-11). This is clear when examining the decomposed temperature data (Figure 1), which despite the expected seasonality displays a trend of increasing temperature. A plot of mean annual temperature also visually reinforces these results (Figure 2).
+A time series of daily average temperature was conducted from 2008 to 2018 to assess temperature changes over time. Temperature changed significantly at Niwot Ridge (Seasonal Mann-Kendall, p-value = 6.133e-11). This is clear when examining the decomposed temperature data (Figure 3), which despite the expected seasonality displays a trend of increasing temperature. A plot of mean annual temperature also visually reinforces these results (Figure 4).
 
-```{r}
+```{r, fig.cap = "Decomposed time series plot showing seasonal and overall temperature trends at Niwot Ridge from 2008 to 2018."}
 Climate_Daily_Means_ts <- ts(Climate_08to18_clean$airtemp_avg_interpolated, start = c(2008,1), end = c(2018,365), frequency = 365)
 
 Climate_daily_trend_decomp <- stl(Climate_Daily_Means_ts,s.window = "periodic")
 plot(Climate_daily_trend_decomp)
 ```
 
-```{r}
+```{r, fig.cap = "Scatterplot of mean annual temperature at Niwot Ridge from 2008 to 2018."}
 AvgTemp_Plot <- ggplot(Climate_Means_08to18, aes(x=Year, y=Mean_Avg_Temp)) +
   geom_point() +
   geom_smooth(method=lm) +
@@ -150,9 +266,9 @@ print(AvgTemp_Plot)
 
 ## Question 2: Are Pika populations changing over time and is there a correlation between population changes and temperature changes?
 
-Linear regressions were conducted to analyze pika populations over time and in relation to changing temperature. Annual pika populations did not change significantly from 2008 to 2020 (Linear Model, F = 2.98, df = 10, Adjusted R-squared = 0.1525, p-value = 0.115). However, the general population trend appears to be decreasing (Figure 3) and it was found that populations did decrease significantly in response to higher temperatures (Linear Model, F = 6.396, df = 8, Adjusted R-squared = 0.3748, p-value = 0.0353, Figure 4). 
+Linear regressions were conducted to analyze pika populations over time and in relation to changing temperature. Annual pika populations did not change significantly from 2008 to 2020 (Linear Model, F = 2.98, df = 10, Adjusted R-squared = 0.1525, p-value = 0.115). However, the general population trend appears to be decreasing (Figure 5) and it was found that populations did decrease significantly in response to higher temperatures (Linear Model, F = 6.396, df = 8, Adjusted R-squared = 0.3748, p-value = 0.0353, Figure 6). 
 
-```{r}
+```{r, fig.cap = "Scatterplot of total annual pika captures at Niwot Ridge from 2008 to 2020."}
 Pika_Total_Count_Plot <- ggplot(Pika_Total_Count, aes(x=Year, y=Captures, group=1)) +
   geom_point() +
   geom_smooth(method=lm) +
@@ -163,33 +279,66 @@ Pika_Total_Count_Plot <- ggplot(Pika_Total_Count, aes(x=Year, y=Captures, group=
 print(Pika_Total_Count_Plot)
 ```
 
-```{r}
+```{r, fig.cap = "Scatterplot of annual pika captures and mean temperature at Niwot Ridge from 2008 to 2018."}
 Pika_AvgTemp_Plot <- ggplot(Pika_Temperature, aes(x=Mean_Avg_Temp, y=Captures)) +
   geom_point() +
   geom_smooth(method=lm) +
   ylab("Pika Captures") +
+  xlab("Mean Annual Temperature") +
   ylim(0,50) +
   ggtitle("Pika Captures vs. Mean Annual Temperature") +
   theme(plot.title = element_text(hjust = 0.5))
 print(Pika_AvgTemp_Plot)
 ```
 
-##Question 3: Are Pika populations changing spatially over time? Are they seeking higher elevation sites?
+## Question 3: Are Pika populations changing spatially over time? Are they seeking higher elevation sites?
 
-Spatial changes in pika population were estimated by calculating and plotting the mean annual capture location. Figure 5 shows the mean capture locations from 2008 to 2020, and Figure 6 shows all captures to help better visualize the study area. There are three sampling sites (Mitchell Lake to the North - 11,044 feet, Long Lake in the center - 10,675 feet, West Knoll to the South - 11,653 feet). There does not appear to be a clear pattern in distribution changes, as the mean capture location changes seemingly randomly in a northward or southward from year to year. In particular, the mean annual capture locations for 2008 and 2020 (the entire timeframe of the data) are nearly identical. Therefore, it appears that pika are not favoring higher elevation ridges in response to climate change. 
+Spatial changes in pika population were estimated by calculating and plotting the mean annual capture location. Figure 7 shows the mean capture locations from 2008 to 2020, and Figure 8 shows all captures to help better visualize the study area. There are three sampling sites (Mitchell Lake to the North - 11,044 feet, Long Lake in the center - 10,675 feet, West Knoll to the South - 11,653 feet). There does not appear to be a clear pattern in distribution changes, as the mean capture location changes seemingly randomly in a northward or southward from year to year. In particular, the mean annual capture locations for 2008 and 2020 (the entire timeframe of the data) are nearly identical. Therefore, it appears that pika are not favoring higher elevation ridges in response to climate change. Note: We apologize for the label overlap, but points can be distinguished at a higher magnification.
 
-```{r}
-All_Pika_Locations_Plot
+```{r, fig.cap = "Mean annual pika capture locations from 2008 to 2020."}
+#Dropping observations without spatial data
+Pika_Spatial <- Pika_Raw %>%
+  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
+  select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
+  group_by(Year) %>%
+  drop_na(northing, easting)
+
+#Calculating mean annual pika capture locations
+
+Mean_Pika_Location <- Pika_Spatial %>%
+  summarise(
+    Mean_Easting = mean(easting),
+    Mean_Northing = mean(northing))
+
+All_Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
+  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
+           crs=2151)
+
+#Creating a spatial dataframe of Pika captures and then dividing into distinct dataframes by year
+
+Pika_Locations_sf <- Pika_Spatial %>% 
+  st_as_sf(coords = c('easting','northing'),
+           crs=2151) 
+
+mapview(All_Mean_Pika_Location_sf) %>%
+  addStaticLabels(label = All_Mean_Pika_Location_sf$Year,
+                  noHide = TRUE,
+                  direction = "left",
+                  textOnly = TRUE,
+                  textsize = "20px")
 ```
 
 ```{r}
-Mean_Pika_Locations_Plot
+mapview(Pika_Locations_sf) 
 ```
 
-##Question 4:  One well documented effect of warming temperatures is an increase in zoonotic diseases. Is mite and flea prevalence in Pikas changing over time and with temperature?
+All pika capture locations from 2008 to 2020. The three sampling sites were Mitchell Lake to the North - 11,044 feet, Long Lake in the center - 10,675 feet, and West Knoll to the South - 11,653 feet.
 
-Linear regressions were run on yearly flea observed, flea sampled, and ear mite sampled data over time and temperature. The regressions found no significance for flea observed data over time (linear model, F = 0.6691, df = 9, Adjusted R-Square = -0.03422, p-value = 0.4345) and temperature (linear model, F = 0.9955, df = 7, Adjusted R-Square = -0.0005629, p-value = 0.3516)(figure x).
-```{r}
+## Question 4:  One well documented effect of warming temperatures is an increase in zoonotic diseases. Is mite and flea prevalence in Pikas changing over time and with temperature?
+
+Linear regressions were run on yearly flea observed, flea sampled, and ear mite sampled data over time and temperature. The regressions found no significance for flea observed data over time (linear model, F = 0.6691, df = 9, Adjusted R-Square = -0.03422, p-value = 0.4345) and temperature (linear model, F = 0.9955, df = 7, Adjusted R-Square = -0.0005629, p-value = 0.3516)(Figure 9).
+
+```{r, fig.cap = "Average number of fleas observed per year per pika over time (top) and temperature (bottom)."}
 
 Flea_Obs_Plot <- ggplot(Yearly_Flea_Obs_10to20, aes(x= Year, y=Avg_Flea_Obs)) +
   geom_point() +
@@ -203,7 +352,7 @@ Flea_Obs_AvgTemp_Plot <- ggplot(No2008_Parasite_Climate_DF, aes(x= Mean_Avg_Temp
   geom_point() +
   geom_smooth(method = lm) +
   ylab("Average Fleas Observed") +
-  xlab("Average Yearly Temperatrue (F)") +
+  xlab("Average Yearly Temperature (F)") +
   ggtitle("Average Fleas Observed by Temperature") +
   theme(plot.title = element_text(hjust = 0.5))
 
@@ -211,8 +360,9 @@ FleaObs_Plot <- plot_grid(Flea_Obs_Plot, Flea_Obs_AvgTemp_Plot, nrow = 2, align 
 print(FleaObs_Plot)
 ```
 
-Likewise, when regressions were run on the number of fleas sampled per pika over time (linear model, F = 1.112, df = 10, Adjusted R-Square = 0.01005, p-value = 0.3165) and temperature (linear model, F = 0.3773, df = 8, Adjusted R-Square = -0.07434, p-value = 0.5561), no significant trends were found (figure x). 
-```{r}
+Likewise, when regressions were run on the number of fleas sampled per pika over time (linear model, F = 1.112, df = 10, Adjusted R-Square = 0.01005, p-value = 0.3165) and temperature (linear model, F = 0.3773, df = 8, Adjusted R-Square = -0.07434, p-value = 0.5561), no significant trends were found (Figure 10). 
+
+```{r, fig.cap = "Average number of fleas sampled per year per pika over time (top) and temperature (bottom)."}
 Flea_Samp_Plot <- ggplot(Final_Parasite_DF, aes(x= Year, y=Avg_Fleas_Samp)) +
   geom_point() +
   geom_smooth(method = lm) +
@@ -225,7 +375,7 @@ Flea_Samp_AvgTemp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x= Mean_Avg_Temp
   geom_point() +
   geom_smooth(method = lm) +
   ylab("Average Fleas Sampled") +
-  xlab("Average Yearly Temperatrue (F)") +
+  xlab("Average Yearly Temperature (F)") +
   ggtitle("Average Fleas Sampled by Temperature") +
   theme(plot.title = element_text(hjust = 0.5))
 
@@ -233,31 +383,33 @@ FleaSamp_Plot <- plot_grid(Flea_Samp_Plot, Flea_Samp_AvgTemp_Plot, nrow = 2, ali
 print(FleaSamp_Plot)
 ```
 
-Finally,  the proportion of captured pikas with ear mites present over both time (linear model, F = 0.08857, df = 10, Adjusted R-Square = -0.09034, p-value = 0.7721) and temperature (linear model, F = 0.1842, df = 8, Adjusted R-Square = 0.08226, p-value = 0.2158) did not change (figure x).
-```{r}
+Finally,  the proportion of captured pikas with ear mites present over both time (linear model, F = 0.08857, df = 10, Adjusted R-Square = -0.09034, p-value = 0.7721) and temperature (linear model, F = 0.1842, df = 8, Adjusted R-Square = 0.08226, p-value = 0.2158) did not change (Figure 11).
+
+```{r, fig.cap = "Proportion of pikas with mites per year over time (top) and temperature (bottom)."}
 Mite_Samp_Plot <- ggplot(Final_Parasite_DF, aes(x= Year, y=Proportion_ear.mite_Samp)) +
   geom_point() +
   geom_smooth(method = lm) +
   scale_x_continuous(breaks = seq(2008, 2020, by = 1)) +
-  ylab("Proportion of Pika with Mites") +
-  ggtitle("Proportion of Pika's With Mites Over Time") +
+  ylab("Proportion with Mites") +
+  ggtitle("Proportion of Pikas With Mites Over Time") +
   theme(plot.title = element_text(hjust = 0.5))
 
 Mite_Samp_AvgTemp_Plot <- ggplot(Final_Parasite_Climate_DF, aes(x= Mean_Avg_Temp, y=Proportion_ear.mite_Samp)) +
   geom_point() +
   geom_smooth(method = lm) +
-  ylab("Proportion of Pika with Mites") +
-  xlab("Average Yearly Temperatrue (F)") +
-  ggtitle("Proportion of Pika's With Mites By Temperature") +
+  ylab("Proportion with Mites") +
+  xlab("Average Yearly Temperature (F)") +
+  ggtitle("Proportion of Pikas With Mites By Temperature") +
   theme(plot.title = element_text(hjust = 0.5))
-print(Mite_Samp_AvgTemp_Plot)
+
 
 MiteSamp_Plot <- plot_grid(Mite_Samp_Plot, Mite_Samp_AvgTemp_Plot, nrow = 2, align = "w")
 print(MiteSamp_Plot)
 ```
 
-While no clear patterns were found for any of our tested variables, some plots reveal the expected general trends. Fleas sampled, fleas observed, and mites sampled visually increased over time (Figure X,Y,Z). However, when compared to temperature data, only the proportion of mites present on captured pikas increased with increasing temperature. The flea data trend lines decreased with increasing temperature. As shown in figure x, the ear mite observed categories had no perceivable pattern that would indicate a correlation over time. 
-```{r}
+While no clear patterns were found for any of our tested variables, some plots reveal the expected general trends. Fleas sampled, fleas observed, and mites sampled visually increased over time (Figure 9,10,11). However, when compared to temperature data, only the proportion of mites present on captured pikas increased with increasing temperature. The flea data trend lines decreased with increasing temperature. As shown in figure 12, the ear mite observed categories had no perceivable pattern that would indicate a correlation over time. 
+
+```{r, fig.cap = "Proportion of pikas with given mite density (PropN = None, PropL = Low, PropM = Medium, PropH = High) over time."}
 
 Mite_PropObs_Time_Plot <- ggplot(Final_Parasite_DF, aes(x = Year)) + 
   geom_line(aes(y= PropL, color = "PropL")) + 
@@ -272,9 +424,6 @@ Mite_PropObs_Time_Plot <- ggplot(Final_Parasite_DF, aes(x = Year)) +
 
 print(Mite_PropObs_Time_Plot)
 ```
-
-
-
 
 \newpage
 

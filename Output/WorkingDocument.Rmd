@@ -1002,3 +1002,41 @@ write.csv(Final_Parasite_Climate_DF, row.names = FALSE,
 
 ```
 
+```{r, fig.cap = "Mean annual pika capture locations from 2008 to 2020."}
+#Dropping observations without spatial data
+Pika_Spatial <- Pika_Raw %>%
+  mutate(PikaID = paste(num_r_ear,"",num_l_ear,"",code_r_ear,"",code_l_ear), Year = year(date)) %>%
+  select(LTER_site:date, Year, easting:num_l_ear, PikaID) %>%
+  group_by(Year) %>%
+  drop_na(northing, easting)
+
+#Calculating mean annual pika capture locations
+
+Mean_Pika_Location <- Pika_Spatial %>%
+  summarise(
+    Mean_Easting = mean(easting),
+    Mean_Northing = mean(northing))
+
+All_Mean_Pika_Location_sf <- Mean_Pika_Location %>% 
+  st_as_sf(coords = c('Mean_Easting','Mean_Northing'),
+           crs=2151)
+
+#Creating a spatial dataframe of Pika captures and then dividing into distinct dataframes by year
+
+Pika_Locations_sf <- Pika_Spatial %>% 
+  st_as_sf(coords = c('easting','northing'),
+           crs=2151) 
+
+mapview(All_Mean_Pika_Location_sf) %>%
+  addStaticLabels(label = All_Mean_Pika_Location_sf$Year,
+                  noHide = TRUE,
+                  direction = "left",
+                  textOnly = TRUE,
+                  textsize = "20px")
+```
+
+```{r, fig.cap = "All pika capture locations from 2008 to 2020. The three sampling sites were Mitchell Lake to the North - 11,044 feet, Long Lake in the center - 10,675 feet, and West Knoll to the South - 11,653 feet."}
+mapview(Pika_Locations_sf) 
+```
+
+ (We apologize for the label overlap, but points can be distinguished at a higher magnification).

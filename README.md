@@ -38,7 +38,7 @@ Although not used in the formal analysis, approximate elevations for the 3 pika 
 
 ## Folder structure, file formats, and naming conventions 
 
-The Data folder contains both raw pika and climate data files (Data/Raw) and an empty processed data folder (Data/Processed) for a future researcher if they wish to fork our repository. The Code folder contains wrangling and analysis code required to generate the visualizations in the final report. The final report is located in the Output folder.
+The Data folder contains both raw pika and climate data files (Data/Raw) and a processed data folder (Data/Processed) with all processed datasets necessary for visualization. The Code folder contains wrangling and analysis code required to generate the visualizations in the final report. The final report is located in the Output folder.
 
 
 | File Folder/Name | File Format |
